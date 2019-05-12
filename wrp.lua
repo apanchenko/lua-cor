@@ -1,7 +1,7 @@
-local log   = require 'src.core.log'
-local typ   = require 'src.core.typ'
-local ass   = require 'src.core.ass'
-local arr   = require 'src.core.arr'
+local log   = require 'src.luacor.log'
+local typ   = require 'src.luacor.typ'
+local ass   = require 'src.luacor.ass'
+local arr   = require 'src.luacor.arr'
 
 -- wrap
 local wrp = {}

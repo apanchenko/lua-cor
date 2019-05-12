@@ -1,8 +1,8 @@
-local arr         = require 'src.core.arr'
-local map         = require 'src.core.map'
-local obj         = require 'src.core.obj'
-local ass         = require 'src.core.ass'
-local log         = require 'src.core.log'
+local arr         = require 'src.luacor.arr'
+local map         = require 'src.luacor.map'
+local obj         = require 'src.luacor.obj'
+local ass         = require 'src.luacor.ass'
+local log         = require 'src.luacor.log'
 
 -- Core dependency graph:
 -- typ bld
@@ -53,7 +53,7 @@ pkg.find = pkg.get
 
 -- wrap modules
 function pkg:wrap()
-  local core = require 'src.core.package'
+  local core = require 'src.luacor.package'
   -- cannot wrap the wrapper so do logging manually
   log:trace(self.path..':wrap() '.. arr.tostring(self.names)):enter()
   -- for all modules

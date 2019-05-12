@@ -1,5 +1,5 @@
-local ass   = require 'src.core.ass'
-local typ   = require 'src.core.typ'
+local ass   = require 'src.luacor.ass'
+local typ   = require 'src.luacor.typ'
 
 local mt = {}
 mt.__index = mt

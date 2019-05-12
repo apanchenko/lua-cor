@@ -1,5 +1,5 @@
-local pkg = require 'src.core.pkg'
+local pkg = require 'src.luacor.pkg'
 
 return pkg
-  :new('src.core')
+  :new('src.luacor')
   :load('arr', 'ass', 'cnt', 'env', 'evt', 'lay', 'log', 'map', 'obj', 'typ', 'vec', 'wrp')

@@ -1,4 +1,4 @@
-local typ = require 'src.core.typ'
+local typ = require 'src.luacor.typ'
 
 local m = {}
 

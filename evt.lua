@@ -1,8 +1,8 @@
-local ass = require 'src.core.ass'
-local log = require 'src.core.log'
-local typ = require 'src.core.typ'
-local obj = require 'src.core.obj'
-local wrp = require 'src.core.wrp'
+local ass = require 'src.luacor.ass'
+local log = require 'src.luacor.log'
+local typ = require 'src.luacor.typ'
+local obj = require 'src.luacor.obj'
+local wrp = require 'src.luacor.wrp'
 
 local evt = obj:extend('evt')
 

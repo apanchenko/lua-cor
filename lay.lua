@@ -1,10 +1,10 @@
 local cfg = require 'src.cfg'
-local ass = require 'src.core.ass'
-local log = require 'src.core.log'
-local typ = require 'src.core.typ'
-local arr = require 'src.core.arr'
-local wrp = require 'src.core.wrp'
-local map = require 'src.core.map'
+local ass = require 'src.luacor.ass'
+local log = require 'src.luacor.log'
+local typ = require 'src.luacor.typ'
+local arr = require 'src.luacor.arr'
+local wrp = require 'src.luacor.wrp'
+local map = require 'src.luacor.map'
 local widget = require 'widget'
 
 local lay = setmetatable({}, { __tostring = function() return 'lay' end})

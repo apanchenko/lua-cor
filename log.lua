@@ -1,5 +1,5 @@
-local ass = require 'src.core.ass'
-local bld = require 'src.core.bld'
+local ass = require 'src.luacor.ass'
+local bld = require 'src.luacor.bld'
 
 -- Create log
 local log = setmetatable({ depth = 0 }, { __tostring = function() return 'log' end})
