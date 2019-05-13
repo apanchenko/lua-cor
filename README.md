@@ -1,4 +1,7 @@
 # luacor
+[![Licence](http://img.shields.io/badge/Licence-MIT-brightgreen.svg)](LICENCE.txt)
+
+
 Lua library to help making [Corona](https://coronalabs.com/) games.
 
 Contains common code I found useful and shareable:
