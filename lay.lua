@@ -1,3 +1,7 @@
+--[[
+    Library of helper functions to layout Corona display objects.
+]]--
+
 local cfg = require 'src.cfg'
 local ass = require 'src.luacor.ass'
 local log = require 'src.luacor.log'
@@ -9,7 +13,7 @@ local widget = require 'widget'
 
 local lay = setmetatable({}, { __tostring = function() return 'lay' end})
 
--- wrap interface
+-- Wrap functions to add checks and logs
 function lay:wrap()
   local target = {'target', typ.tab}
   local obj    = {'object', typ.tab}
@@ -24,7 +28,7 @@ function lay:wrap()
   wrp.wrap_stc_inf(lay, 'rows',   obj,     opts)
 end
 
-
+-- Insert obj into target with layout options
 -- @param target          display group insert in
 -- @param obj             object to render
 -- @param opts.w          width in pixels
@@ -61,14 +65,14 @@ lay.render = function(target, obj, opts)
   return obj
 end
 
--- animate coordinates
+-- Animate x,y coordinates
 lay.to = function(obj, pos, params)
   params.x = pos.x
   params.y = pos.y
   transition.to(obj.view, params)
 end
 
--- arrange children in column
+-- Arrange children in column
 function lay.column(obj, space)
   local view = obj.view or obj
   local y = 0
@@ -106,6 +110,7 @@ function lay.rows(obj, opts)
   end
 end 
 
+-- Create image
 -- group      display group insert in
 -- opts       @see render
 -- path       path to image resource
@@ -204,7 +209,7 @@ function lay.button(group, opts)
   return button
 end
 
--------------------------------------------------------------------------------
+--
 function lay.sheet(group, sheet, frame, opts)
   assert(sheet)
   assert(frame)
@@ -212,10 +217,6 @@ function lay.sheet(group, sheet, frame, opts)
   local img = display.newImageRect(sheet, frame, opts.w, opts.h)
   lay.render(group, img, opts)
   return img
-end
-
---
-function lay:test()
 end
 
 return lay
