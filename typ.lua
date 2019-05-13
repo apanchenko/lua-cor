@@ -1,20 +1,33 @@
 --[[
+    Library for type checking.
+    Contains checkers returning true if argument meets certain conditions.
+    For example to check x is a string, call typ.str(x).
+    Other checkers:
+        typ.any(v)          - v is anything not nil
+        typ.boo(v)          - v is boolean
+        typ.tab(v)          - v is table
+        typ.num(v)          - v is number
+        typ.str(v)          - v is string
+        typ.fun(v)          - v is function
+        typ.nat(v)          - v is natural number
 
-
+    Also you may create new checkers:
+        typ.meta(mt)        - t equals mt or extends mt
+        typ.metaname(name)  - t is a table or extends table so that tostring(table)==name
 --]]
 
--- typ metatable
+-- Typ metatable
 local mt = {}
 
--- support tostring(typ)
+-- Support tostring(typ)
 function mt:__tostring()
   return 'typ'
 end
 
--- create typ
+-- Create typ
 local typ = setmetatable({}, mt)
 
--- check if 't' extends 'mt'
+-- Check if 't' extends 'mt'
 function typ.extends(t, mt)
   if mt == nil then
     return false
@@ -27,12 +40,12 @@ function typ.extends(t, mt)
   return false
 end
 
--- check if 't' is or extends 'mt'
+-- Check if 't' is or extends 'mt'
 function typ.is(t, mt)
   return t == mt or typ.extends(t, mt)
 end
 
--- check if 't' has metatable with 'name'
+-- Check if 't' has metatable with 'name'
 function typ.isname(t, name)
   while tostring(t) ~= name do
     if t == nil then
@@ -48,7 +61,7 @@ function mt:__call(v)
   return typ.is(v, typ)
 end
 
--- describe type by name and checking function
+-- Describe type by name and checking function
 function typ:new(name, check)
   -- validate arguments
   if self ~= typ then
@@ -73,12 +86,12 @@ function typ:__call(v) return self.check(v) end
 --  return make_type(name, is)
 --end
 
--- get checker function type(v)
+-- Get checker function type(v)
 local get_istype = function(typename)
   return function(v) return type(v) == typename end
 end
 
--- simple types
+-- Simple types
 typ.any = typ:new('typ.any', function(v) return v ~= nil end, typ)
 typ.boo = typ:new('typ.boo', get_istype('boolean'))
 typ.tab = typ:new('typ.tab', get_istype('table'))
@@ -87,7 +100,7 @@ typ.str = typ:new('typ.str', get_istype('string'))
 typ.fun = typ:new('typ.fun', get_istype('function'))
 typ.nat = typ:new('typ.nat', function(v) return type(v) == 'number' and v >= 0 and math.floor(v) == v end, typ)
 
--- create type that has metatable mt
+-- Create type that has metatable mt
 function typ.meta(mt)
   if mt == nil then
     error('typ.meta(nil)')
@@ -97,14 +110,14 @@ function typ.meta(mt)
   return res
 end
 
--- create type that has named metatable
+-- Create type that has named metatable
 function typ.metaname(name)
   local res = typ:new('typ_'..name, function(v) return typ.isname(v, name) end)
   --print('typ.metaname('..name..') -> '.. tostring(res))
   return res
 end
 
---
+-- Test all that
 function typ:test(ass)
   -- typ
   ass(tostring(typ)=='typ',  'invalid typ name')
@@ -132,8 +145,6 @@ function typ:test(ass)
 
   ass(typ(typ.fun),          'fun is not typ')
   ass(typ(typ.nat),          'nat is not typ')
-
-    --and (typ.meta())
 end
 
 return typ
