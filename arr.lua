@@ -1,27 +1,36 @@
--- thanks to Marcus Irven
+--[[
+    Library working with Lua arrays.
+    As you remember, indeces in Lua arrays start with 1.
+    Thanks to Marcus Irven
+]]--
+
 local floor = math.floor
 
 local arr = setmetatable({}, { __tostring = function() return 'arr' end})
 
--- check if array t is empty
+-- Check if t is empty
 function arr.is_empty(t)        return next(t) == nil end
--- add v at the end of array t
+
+-- Add v at the end of array t
 function arr.push(t, v)         t[#t + 1] = v end
--- remove and return last element of array t
+
+-- Remove and return last element of array t
 function arr.pop(t)             return table.remove(t) end
--- remove and return first element of array t
+
+-- Remove and return first element of array t
 function arr.shift(t)           return table.remove(t, 1) end
--- insert v at the front of array t
+
+-- Insert v at the front of array t
 function arr.unshift(t, v)      table.insert(t, 1, v) end
 
---
+-- Iterate over array t calling function fn for each element
 function arr.each(t, fn)
   for i = 1, #t do
     fn(t[i])
   end
 end
 
---
+-- Create a new array transforming each element of array t with funciton fn
 function arr.map(t, fn)
   local mapped = {}
   for i = 1, #t do
@@ -30,7 +39,7 @@ function arr.map(t, fn)
   return mapped
 end
 
---
+-- Reduce all elements of t into single value with function fn
 function arr.reduce(t, memo, fn)
   for i = 1, #t do
     memo = fn(memo, t[i])
@@ -38,7 +47,7 @@ function arr.reduce(t, memo, fn)
   return memo
 end
 
---
+-- Find first element of t, where fn(t[i]) is true
 function arr.detect(t, fn)
   for i = 1, #t do
     if fn(t[i]) then
@@ -47,7 +56,7 @@ function arr.detect(t, fn)
   end
 end
 
---
+-- Create new array with all elements of t, where fn(ti) is true
 function arr.select(t, fn)
   local selected = {}
   for i = 1, #t do
@@ -58,7 +67,7 @@ function arr.select(t, fn)
   return selected
 end
 
---
+-- Create new array with all elements of t, where fn(ti) is false. Complemtary to select
 function arr.reject(t, fn)
   local selected = {}
   for i = 1, #t do
@@ -69,7 +78,7 @@ function arr.reject(t, fn)
   return selected
 end
 
---
+-- Return true if fn is true for all elements of t. Logical AND.
 function arr.all(t, fn)
   for i = 1, #t do
     if not fn(t[i]) then
@@ -79,7 +88,7 @@ function arr.all(t, fn)
   return true
 end
 
---
+-- Return true if fn is true for any element of t. Logical OR.
 function arr.any(t, fn)
   for i = 1, #t do
     if fn(t[i]) then
@@ -89,27 +98,28 @@ function arr.any(t, fn)
   return false
 end
 
---
+-- Return true if value equals any element of t
 function arr.include(t, value)
   for i = 1, #t do
     if t[i] == value then
-      return true end
+      return true
+    end
   end
   return false
 end
 
---
+-- Call member function by name on all elements of t
 function arr.invoke(t, fn_name, ...)
   local args = {...}
   arr.each(t, function(x) x[fn_name](unpack(args)) end)
 end
 
---
+-- Create array of members by name of all elements of t
 function arr.pluck(t, name)
   return arr.map(t, function(x) return x[name] end)
 end
 
---
+-- Minimize fn
 function arr.min(t, fn)
   return arr.reduce(t, {}, function(min, x) 
     local value = fn(x)
@@ -126,7 +136,7 @@ function arr.min(t, fn)
   end).item
 end
 
---
+-- Maximize fn
 function arr.max(t, fn)
   return arr.reduce(t, {}, function(min, x) 
     local value = fn(x)
@@ -143,7 +153,7 @@ function arr.max(t, fn)
   end).item
 end
 
---
+-- Create reversed array
 function arr.reverse(t)
   local reversed = {}
   for i = 1, #t do
@@ -151,7 +161,8 @@ function arr.reverse(t)
   end
   return reversed
 end
---
+
+-- Create array with n first elements of t
 function arr.first(t, n)
   if n == nil then
     return t[1]
@@ -163,7 +174,8 @@ function arr.first(t, n)
   end
   return first
 end
---
+
+-- Create array with elements of t starting from index
 function arr.rest(t, index)
   index = index or 2
   local rest = {}
@@ -172,7 +184,8 @@ function arr.rest(t, index)
   end
   return rest
 end
---
+
+-- Create subarray of t
 function arr.slice(array, index, length)
   local sliced = {}
   index = math.max(index, 1)
@@ -182,7 +195,8 @@ function arr.slice(array, index, length)
   end
   return sliced
 end
---
+
+-- Create array with flat structure - no tables
 function arr.flatten(array)
   local all = {}
   for i = 1, #array do
@@ -196,23 +210,23 @@ function arr.flatten(array)
   return all
 end
 
---
+-- Create string joining elements of array with separator
 function arr.join(array, separator)
   return table.concat(array, separator)
 end
 
--- return random element of table
+-- Return random element
 function arr.random(t)
   return t[math.random(#t)]
 end
 
--- remove and return random element
+-- Remove and return random element
 function arr.remove_random(t)
   local i = math.random(#t)
   return table.remove(t, i)
 end
 
--- to string
+-- Convert array to string
 function arr.tostring(t, sep)
   sep = sep or ', '
   if #t == 0 then
@@ -250,7 +264,7 @@ function arr.find_index(t, low, high, object, is_lower)
   return high
 end
 
---
+-- Wrap arr functions to add type checks and logs
 function arr:wrap(core)
   local typ = core:get('typ')
   local wrp = core:get('wrp')
@@ -265,7 +279,7 @@ function arr:wrap(core)
   wrp.wrap_stc_inf(arr, 'find_index', t, {'low', typ.num}, {'high', typ.num}, {'obj', typ.any}, {'is_lower', typ.fun})
 end
 
---
+-- Test arr
 function arr:test(ass)
   ass.eq(arr.tostring({'semana','mes','ano'}), 'semana, mes, ano')
   local compare = function(a, b) return a < b end
@@ -274,6 +288,5 @@ function arr:test(ass)
   ass.eq(arr.find_index({1},     1, 2, 2, compare), 2, 'test find_index - back')
   ass.eq(arr.find_index({},      1, 1, 9, compare), 1, 'test find_index - empty')
 end
-
 
 return arr
