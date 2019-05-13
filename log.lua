@@ -1,4 +1,9 @@
-local ass = require 'src.luacor.ass'
+--[[
+    Log system.
+    Have output funcitons for messages of different severity: info, trace, warning, error.
+    Active severity is selected by cfg.build setting.
+]]--
+
 local bld = require 'src.luacor.bld'
 
 -- Create log
@@ -13,7 +18,7 @@ local function out(...)
   print(str)
 end
 
--- configure log
+-- Configure log
 function log:on_cfg(cfg)
   -- dumb is always silent
   dumb = function(me) return me end
@@ -39,18 +44,14 @@ function log:on_cfg(cfg)
   self:trace('log:on_cfg '..cfg.build.name)
 end
 
--- increase stack depth
+-- Increase stack depth
 function log:enter()
   self.depth = self.depth + 1
 end
 
--- decrease stack depth
+-- Decrease stack depth
 function log:exit()
   self.depth = self.depth - 1
-end
-
---
-function log:test()
 end
 
 return log
