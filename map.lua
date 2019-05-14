@@ -1,7 +1,7 @@
-local ass   = require 'src.luacor.ass'
-local typ   = require 'src.luacor.typ'
-local wrp   = require 'src.luacor.wrp'
-local log   = require 'src.luacor.log'
+local ass   = require 'src.lua-cor.ass'
+local typ   = require 'src.lua-cor.typ'
+local wrp   = require 'src.lua-cor.wrp'
+local log   = require 'src.lua-cor.log'
 
 -- name to value
 local map = setmetatable({}, {__tostring=function() return 'map' end})

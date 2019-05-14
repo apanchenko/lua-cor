@@ -41,9 +41,9 @@ obj.get_typename = function(self) return self.tname end
 
 -- Wrap obj functions with logs and checks 
 function obj:wrap()
-  local wrp = require 'src.luacor.wrp'
-  local typ = require 'src.luacor.typ'
-  local ass = require 'src.luacor.ass'
+  local wrp = require 'src.lua-cor.wrp'
+  local typ = require 'src.lua-cor.typ'
+  local ass = require 'src.lua-cor.ass'
   local typename = {'typename', typ.str}
   wrp.wrap_stc_inf(obj, 'create_lib', typename)
   wrp.wrap_tbl_inf(obj, 'extend',     typename)

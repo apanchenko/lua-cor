@@ -4,7 +4,7 @@
     Active severity is selected by cfg.build setting.
 ]]--
 
-local bld = require 'src.luacor.bld'
+local bld = require 'src.lua-cor.bld'
 
 -- Create log
 local log = setmetatable({ depth = 0 }, { __tostring = function() return 'log' end})

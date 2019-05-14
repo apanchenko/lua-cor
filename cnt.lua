@@ -1,9 +1,9 @@
-local ass   = require 'src.luacor.ass'
-local typ   = require 'src.luacor.typ'
-local wrp   = require 'src.luacor.wrp'
-local log   = require 'src.luacor.log'
-local map   = require 'src.luacor.map'
-local obj   = require 'src.luacor.obj'
+local ass   = require 'src.lua-cor.ass'
+local typ   = require 'src.lua-cor.typ'
+local wrp   = require 'src.lua-cor.wrp'
+local log   = require 'src.lua-cor.log'
+local map   = require 'src.lua-cor.map'
+local obj   = require 'src.lua-cor.obj'
 
 -- Map id->object
 -- where object have

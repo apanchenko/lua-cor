@@ -2,10 +2,10 @@
     Vector or two elements. Extremely useful for 2D math.
 ]]--
 
-local obj   = require 'src.luacor.obj'
-local typ   = require 'src.luacor.typ'
-local ass   = require 'src.luacor.ass'
-local wrp   = require 'src.luacor.wrp'
+local obj   = require 'src.lua-cor.obj'
+local typ   = require 'src.lua-cor.typ'
+local ass   = require 'src.lua-cor.ass'
+local wrp   = require 'src.lua-cor.wrp'
 
 -- Define 2d vector type
 local vec = obj:extend('vec')

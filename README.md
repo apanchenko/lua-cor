@@ -1,4 +1,4 @@
-# luacor
+# lua-cor
 [![Licence](http://img.shields.io/badge/Licence-MIT-brightgreen.svg)](LICENCE.txt)
 
 

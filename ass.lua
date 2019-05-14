@@ -3,7 +3,7 @@
     Useful for testing and validating.
 ]]--
 
-local typ = require 'src.luacor.typ'
+local typ = require 'src.lua-cor.typ'
 local m = {}
 
 -- Assert 'v' is true
