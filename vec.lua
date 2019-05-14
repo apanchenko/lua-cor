@@ -1,5 +1,5 @@
 --[[
-    Vector or two elements. Extremely useful for 2D math.
+    Vector of two elements. Extremely useful for 2D math.
 ]]--
 
 local obj   = require 'src.lua-cor.obj'
