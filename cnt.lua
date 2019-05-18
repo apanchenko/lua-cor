@@ -28,6 +28,7 @@ function cnt:wrap()
   wrp.wrap_sub_inf(cnt, 'any',      fn)
   wrp.wrap_sub_inf(cnt, 'each',     fn)
   wrp.wrap_sub_inf(cnt, 'random')
+  wrp.wrap_sub_inf(cnt, 'clear')
 end
 
 -- Create cnt instance
@@ -121,6 +122,11 @@ end
 --
 function cnt:random()
   return map.random(self.data)
+end
+
+--
+function cnt:clear()
+  self.data = {}
 end
 
 -- MODULE ---------------------------------------------------------------------
