@@ -80,7 +80,7 @@ function wrp.fn(t, fn_name, arg_infos, opts)
 
   -- 
   local function arguments(call, args)
-    ass.eq(#arg_infos, #args, call..' expected '..#arg_infos..' arguments, found '..#args..' - ['..arr.tostring(args)..']')
+    ass.eq(#arg_infos, #args, call..' expected '..#arg_infos..' arguments, found '..#args..' - ['..arr.join(args)..']')
     local res = ''
     for i = 1, #args do
       local arg = args[i]

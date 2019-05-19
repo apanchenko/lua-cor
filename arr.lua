@@ -1,107 +1,142 @@
 --[[
-    Library working with Lua arrays.
+    Array.
     As you remember, indeces in Lua arrays start with 1.
     Thanks to Marcus Irven
 ]]--
 
-local floor = math.floor
+local mfloor  = math.floor
+local mrandom = math.random
+local mmax    = math.max
+local mmin    = math.min
 
-local arr = setmetatable({}, { __tostring = function() return 'arr' end})
+-- Setup
+local mt = {__tostring = function() return 'arr' end}
+local arr = setmetatable({}, mt)
+arr.__index = arr
 
--- Check if t is empty
-function arr.is_empty(t)        return next(t) == nil end
+-- Create instance
+mt.__call = function(t, ...)    return setmetatable({...}, t) end
 
--- Add v at the end of array t
-function arr.push(t, v)         t[#t + 1] = v end
+-- Convert to string
+arr.__tostring = function(t, sep) return arr.join(t, sep) end
 
--- Remove and return last element of array t
-function arr.pop(t)             return table.remove(t) end
+-- Convert array to string
+function arr:join(sep)
+  sep = sep or ', '
+  if #self == 0 then
+    return ''
+  end
+  local res = tostring(self[1])
+  for i = 2, #self do
+    res = res.. sep.. tostring(self[i])
+  end
+  return res
+end
 
--- Remove and return first element of array t
-function arr.shift(t)           return table.remove(t, 1) end
+-- Check emptyness
+function arr:is_empty()         return next(self) == nil end
 
--- Insert v at the front of array t
-function arr.unshift(t, v)      table.insert(t, 1, v) end
+-- Number of elements
+function arr:length()           return #self end
 
--- Iterate over array t calling function fn for each element
-function arr.each(t, fn)
-  for i = 1, #t do
-    fn(t[i])
+-- Add v at the end
+function arr:push(v)            self[#self + 1] = v end
+
+-- Remove and return last element
+function arr:pop()              return table.remove(self) end
+
+-- Remove and return first element
+function arr:shift()            return table.remove(self, 1) end
+
+-- Insert v at the front
+function arr:unshift(v)         table.insert(self, 1, v) end
+
+-- Remove all emenets. O(N)
+function arr:clear()
+  while #self > 0 do
+    table.remove(self)
   end
 end
 
--- Create a new array transforming each element of array t with funciton fn
-function arr.map(t, fn)
-  local mapped = {}
-  for i = 1, #t do
-    mapped[i] = fn(t[i])
+-- Iterate calling function fn for each element
+function arr:each(fn)
+  for i = 1, #self do
+    fn(self[i])
+  end
+end
+
+-- Create a new array transforming each element with funciton fn
+function arr:map(fn)
+  local mapped = arr()
+  for i = 1, #self do
+    mapped[i] = fn(self[i])
   end
   return mapped
 end
 
--- Reduce all elements of t into single value with function fn
-function arr.reduce(t, memo, fn)
-  for i = 1, #t do
-    memo = fn(memo, t[i])
+-- Reduce all elements into single value with function fn
+function arr:reduce(memo, fn)
+  for i = 1, #self do
+    memo = fn(memo, self[i])
   end
   return memo
 end
 
--- Find first element of t, where fn(t[i]) is true
-function arr.detect(t, fn)
-  for i = 1, #t do
-    if fn(t[i]) then
+-- Find index of first element of t, where fn(t[i]) is true
+function arr:detect(fn)
+  for i = 1, #self do
+    if fn(self[i]) then
       return i
     end
   end
 end
 
 -- Create new array with all elements of t, where fn(ti) is true
-function arr.select(t, fn)
-  local selected = {}
-  for i = 1, #t do
-    if fn(t[i]) then
-      selected[#selected + 1] = t[i]
+function arr:select(fn)
+  local selected = arr()
+  for i = 1, #self do
+    if fn(self[i]) then
+      selected[#selected + 1] = self[i]
     end
   end
   return selected
 end
 
 -- Create new array with all elements of t, where fn(ti) is false. Complemtary to select
-function arr.reject(t, fn)
-  local selected = {}
-  for i = 1, #t do
-    if not fn(t[i]) then
-      selected[#selected + 1] = t[i]
+function arr:reject(fn)
+  local selected = arr()
+  for i = 1, #self do
+    if not fn(self[i]) then
+      selected[#selected + 1] = self[i]
     end
   end
   return selected
 end
 
--- Return true if fn is true for all elements of t. Logical AND.
-function arr.all(t, fn)
-  for i = 1, #t do
-    if not fn(t[i]) then
+-- True if fn is true for all elements. Logical AND.
+function arr:all(fn)
+  for i = 1, #self do
+    if not fn(self[i]) then
       return false
     end
   end
   return true
 end
 
--- Return true if fn is true for any element of t. Logical OR.
-function arr.any(t, fn)
-  for i = 1, #t do
-    if fn(t[i]) then
+-- True if fn is true for any element. Logical OR.
+function arr:any(fn)
+  for i = 1, #self do
+    if fn(self[i]) then
       return true
     end
   end
   return false
 end
 
--- Return true if value equals any element of t
-function arr.include(t, value)
-  for i = 1, #t do
-    if t[i] == value then
+-- True if value equals any element
+function arr:include(v)
+  for i = 1, #self do
+    if self[i] == v then
       return true
     end
   end
@@ -109,19 +144,19 @@ function arr.include(t, value)
 end
 
 -- Call member function by name on all elements of t
-function arr.invoke(t, fn_name, ...)
+function arr:invoke(fn_name, ...)
   local args = {...}
-  arr.each(t, function(x) x[fn_name](unpack(args)) end)
+  arr.each(self, function(x) x[fn_name](unpack(args)) end)
 end
 
 -- Create array of members by name of all elements of t
-function arr.pluck(t, name)
-  return arr.map(t, function(x) return x[name] end)
+function arr:pluck(name)
+  return arr.map(self, function(x) return x[name] end)
 end
 
 -- Minimize fn
-function arr.min(t, fn)
-  return arr.reduce(t, {}, function(min, x) 
+function arr:min(fn)
+  return arr.reduce(self, {}, function(min, x) 
     local value = fn(x)
     if min.item == nil then
       min.item = x
@@ -137,124 +172,119 @@ function arr.min(t, fn)
 end
 
 -- Maximize fn
-function arr.max(t, fn)
-  return arr.reduce(t, {}, function(min, x) 
+function arr:max(fn)
+  return arr.reduce(self, {}, function(max, x) 
     local value = fn(x)
-    if min.item == nil then
-      min.item = x
-      min.value = value
+    if max.item == nil then
+      max.item = x
+      max.value = value
     else
-      if value > min.value then
-        min.item = x
-        min.value = value
+      if value > max.value then
+        max.item = x
+        max.value = value
       end
     end
-    return min
+    return max
   end).item
 end
 
 -- Create reversed array
-function arr.reverse(t)
-  local reversed = {}
-  for i = 1, #t do
-    table.insert(reversed, 1, t[i])
+function arr:reverse()
+  local reversed = arr()
+  for i = 1, #self do
+    table.insert(reversed, 1, self[i])
   end
   return reversed
 end
 
 -- Create array with n first elements of t
-function arr.first(t, n)
+function arr:first(n)
   if n == nil then
-    return t[1]
+    return self[1]
   end
-  local first = {}
-  n = math.min(n, #t)
+  local first = arr()
+  n = math.min(n, #self)
   for i = 1, n do
-    first[i] = t[i]
+    first[i] = self[i]
   end
   return first
 end
 
 -- Create array with elements of t starting from index
-function arr.rest(t, index)
+function arr:rest(index)
   index = index or 2
-  local rest = {}
-  for i = index, #t do
-    rest[#rest + 1] = t[i]
+  local rest = arr()
+  for i = index, #self do
+    rest[#rest + 1] = self[i]
   end
   return rest
 end
 
 -- Create subarray of t
-function arr.slice(array, index, length)
-  local sliced = {}
-  index = math.max(index, 1)
-  local end_index = math.min(index + length - 1, #array)
+function arr:slice(index, length)
+  local sliced = arr()
+  index = mmax(index, 1)
+  local end_index = mmin(index + length - 1, #self)
   for i = index, end_index do
-    sliced[#sliced + 1] = array[i]
+    sliced[#sliced + 1] = self[i]
   end
   return sliced
 end
 
 -- Create array with flat structure - no tables
-function arr.flatten(array)
-  local all = {}
-  for i = 1, #array do
-    if type(array[i]) == "table" then
-      local flattened = arr.flatten(array[i])
-      arr.each(flattened, function(e) all[#all + 1] = e end)
+function arr:flatten()
+  local all = arr()
+  for i = 1, #self do
+    if type(self[i]) == "table" then
+      arr.flatten(self[i]):each(function(e) all:push(e) end)
     else
-      all[#all + 1] = array[i]
+      all:push(self[i])
     end
   end
   return all
 end
 
--- Create string joining elements of array with separator
-function arr.join(array, separator)
-  return table.concat(array, separator)
+-- Return random element
+function arr:random()
+  return self[mrandom(#self)]
 end
 
--- Return random element
-function arr.random(t)
-  return t[math.random(#t)]
+-- Return array of n random elements of t
+function arr:random_sample(n)
+  if n >= #self then
+    return self
+  end
+  local indices = {}
+  local result = arr()
+  for i = 1, n do
+    local j = mfloor(mrandom(#self - i) + i);
+    result[i] = self[indices[j] and indices[j] or j];
+    indices[j] = indices[i] and indices[i] or i;
+  end
+  return result;
 end
 
 -- Remove and return random element
-function arr.remove_random(t)
-  local i = math.random(#t)
-  return table.remove(t, i)
-end
-
--- Convert array to string
-function arr.tostring(t, sep)
-  sep = sep or ', '
-  if #t == 0 then
-    return ''
-  end
-  local res = tostring(t[1])
-  for i = 2, #t do
-    res = res.. sep.. tostring(t[i])
-  end
-  return res
+function arr:remove_random()
+  local i = mrandom(#self)
+  return table.remove(self, i)
 end
 
 -- Find index to insert an object into sorted array so that array remains sorted
--- @param t        array to search
 -- @param low      min search range bound
 -- @param high     max search range bound
--- @param object   find place for this object
--- @param is_lower compare function (a, b) returns a < b
+-- @param v        find place for this object
+-- @param lower    compare function (a, b) returns a < b
 -- @return         number [low, high]
-function arr.find_index(t, low, high, object, is_lower)
+function arr:find_index(low, high, v, lower)
   --todo ass.le(1, low)
   --todo ass.le(low, high)
   while low < high do
-    local mid = floor((low + high) * 0.5)
-    if is_lower(t[mid], object) then
+    local mid = mfloor((low + high) * 0.5)
+    if lower(self[mid], v) then
       low = mid + 1
     else
-      if is_lower(object, t[mid]) then
+      if lower(v, self[mid]) then
         high = mid
       else
         return mid
@@ -271,22 +301,138 @@ function arr:wrap(core)
   local t   = {'t', typ.tab}
   local v   = {'v', typ.any}
   local f   = {'f', typ.fun}
+  local n   = {'n', typ.nat}
 
-  wrp.wrap_stc_inf(arr, 'push',       t, v)
-  wrp.wrap_stc_inf(arr, 'all',        t, f)
-  wrp.wrap_stc_inf(arr, 'each',       t, f)
-  wrp.wrap_stc_inf(arr, 'random',     t)
-  wrp.wrap_stc_inf(arr, 'find_index', t, {'low', typ.num}, {'high', typ.num}, {'obj', typ.any}, {'is_lower', typ.fun})
+  --wrp.wrap_stc_inf(arr, 'join',           t, {'sep', typ.str})
+  wrp.wrap_stc_inf(arr, 'is_empty',       t)
+  wrp.wrap_stc_inf(arr, 'length',         t)
+  wrp.wrap_stc_inf(arr, 'push',           t, v)
+  wrp.wrap_stc_inf(arr, 'pop',            t)
+  wrp.wrap_stc_inf(arr, 'shift',          t)
+  wrp.wrap_stc_inf(arr, 'unshift',        t, v)
+  wrp.wrap_stc_inf(arr, 'clear',          t)
+  wrp.wrap_stc_inf(arr, 'each',           t, f)
+  wrp.wrap_stc_inf(arr, 'map',            t, f)
+  wrp.wrap_stc_inf(arr, 'reduce',         t, {'memo', typ.any}, f)
+  wrp.wrap_stc_inf(arr, 'detect',         t, f)
+  wrp.wrap_stc_inf(arr, 'select',         t, f)
+  wrp.wrap_stc_inf(arr, 'reject',         t, f)
+  wrp.wrap_stc_inf(arr, 'all',            t, f)
+  wrp.wrap_stc_inf(arr, 'any',            t, f)
+  wrp.wrap_stc_inf(arr, 'include',        t, v)
+  --invoke
+  wrp.wrap_stc_inf(arr, 'pluck',          t, {'name', typ.str})
+  wrp.wrap_stc_inf(arr, 'min',            t, f)
+  wrp.wrap_stc_inf(arr, 'max',            t, f)
+  wrp.wrap_stc_inf(arr, 'reverse',        t)
+  wrp.wrap_stc_inf(arr, 'first',          t, n)
+  wrp.wrap_stc_inf(arr, 'rest',           t, n)
+  wrp.wrap_stc_inf(arr, 'slice',          t, n, n)
+  wrp.wrap_stc_inf(arr, 'flatten',        t)
+  wrp.wrap_stc_inf(arr, 'random',         t)
+  wrp.wrap_stc_inf(arr, 'random_sample',  t, n)
+  wrp.wrap_stc_inf(arr, 'remove_random',  t)
+  wrp.wrap_stc_inf(arr, 'find_index',     t, {'low', typ.num}, {'high', typ.num}, {'obj', typ.any}, {'is_lower', typ.fun})
 end
 
 -- Test arr
 function arr:test(ass)
-  ass.eq(arr.tostring({'semana','mes','ano'}), 'semana, mes, ano')
-  local compare = function(a, b) return a < b end
-  ass.eq(arr.find_index({1},     1, 2, 0, compare), 1, 'test find_index - front')
-  ass.eq(arr.find_index({1,3},   1, 3, 2, compare), 2, 'test find_index - middle')
-  ass.eq(arr.find_index({1},     1, 2, 2, compare), 2, 'test find_index - back')
-  ass.eq(arr.find_index({},      1, 1, 9, compare), 1, 'test find_index - empty')
+  local a = arr()
+  local b = arr(1, 2, 3)
+
+  -- basic manipulations
+  a:push(8)
+  a:push(9)
+  a:unshift(7)
+  ass.eq(a:pop(), 9)
+  ass.eq(a:shift(), 7)
+  ass.eq(a:length(), 1)
+  a:clear()
+  ass.eq(a:length(), 0)
+  ass(a:is_empty())
+
+  -- tostring
+  ass.ts(a, '')
+  ass.ts(b, '1, 2, 3')
+  ass.eq(b:join('-'), '1-2-3')
+
+  -- each
+  local sum = 0
+  b:each(function(v) sum = sum + v end)
+  ass.eq(sum, 6)
+
+  -- map
+  b = b:map(function(v) return v * 3 end)
+  ass.eq(b[1], 3)
+  ass.eq(b[2], 6)
+  ass.eq(b[3], 9)
+
+  -- reduce
+  sum = 0
+  local fn = function(sum, v) return sum + v end
+  ass.eq(a:reduce(0, fn), 0)
+  ass.eq(b:reduce(sum, fn), 18)
+
+  -- detect
+  fn = function(v) return v == 6 end
+  ass.eq(a:detect(fn), nil)
+  ass.eq(b:detect(fn), 2)
+
+  -- select
+  fn = function(v) return v % 2 ~= 0 end
+  ass.ts(a:select(fn), '')
+  ass.ts(b:select(fn), '3, 9')
+
+  -- reject
+  ass.ts(a:reject(fn), '')
+  ass.ts(b:reject(fn), '6')
+
+  -- all
+  ass(    a:all(function(v) return false end))
+  ass(    b:all(function(v) return v % 3 == 0 end))
+  ass(not b:all(function(v) return v > 4 end))
+
+  -- any
+  ass(not a:any(function(v) return true end))
+  ass(    b:any(function(v) return v > 4 end))
+  ass(not b:any(function(v) return v > 10 end))
+
+  -- include
+  ass(not a:include(1))
+  ass(    b:include(9))
+  ass(not b:include(0))
+
+  -- invoke
+  local c = arr({run=function(v) v.x = v.x + 1 end}, {run=function(v) v.x = v.x + 2 end})
+  local v = {x = 0}
+  c:invoke('run', v)
+  ass.eq(v.x, 3)
+
+  -- ...
+  ass(c:pluck('run'):all(function(v) return type(v) == 'function' end))
+  ass.eq(b:min(function(v) return v end), 3)
+  ass.eq(b:max(function(v) return v end), 9)
+  ass.ts(b:reverse(), '9, 6, 3')
+  ass.ts(b:first(2), '3, 6')
+  ass.ts(b:rest(2), '6, 9')
+  ass.ts(b:slice(2, 1), '6')
+  ass.ts(arr({}, {1, {2, {3, 4}}}):flatten(), '1, 2, 3, 4')
+
+  -- random
+  local r = b:random()
+  ass(r==3 or r==6 or r==9)
+  c = b:random_sample(2)
+  ass.eq(c:length(), 2)
+  ass((c:include(3) and c:include(6)) or
+      (c:include(3) and c:include(9)) or
+      (c:include(6) and c:include(9)))
+
+  -- find_index
+  local cmp = function(a, b) return a < b end
+  ass.eq(arr.find_index({1},   1, 2, 0, cmp), 1, 'test find_index - front')
+  ass.eq(arr.find_index({1,3}, 1, 3, 2, cmp), 2, 'test find_index - middle')
+  ass.eq(arr.find_index({1},   1, 2, 2, cmp), 2, 'test find_index - back')
+  ass.eq(arr.find_index({},    1, 1, 9, cmp), 1, 'test find_index - empty')
 end
 
 return arr

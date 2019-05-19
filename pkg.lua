@@ -22,16 +22,16 @@ function pkg:new(path)
   return obj.new(self,
   {
     path = path,
-    names = {}, -- array of module names, keeping order
+    names = arr(), -- array of module names, keeping order
     modules = {} -- map id->module
   })
 end
 
 -- load module to package
 function pkg:load(...)
-  self.names = {...}
-  log:info(self.path..':load('..arr.tostring(self.names)..')'):enter()
-  arr.each(self.names, function(name)
+  self.names = arr(...)
+  log:info(self.path..':load('..tostring(self.names)..')'):enter()
+  self.names:each(function(name)
     log:info(name)
     local fullname = self.path.. '.'.. name
     local mod = require(fullname)
@@ -55,9 +55,9 @@ pkg.find = pkg.get
 function pkg:wrap()
   local core = require 'src.lua-cor.package'
   -- cannot wrap the wrapper so do logging manually
-  log:trace(self.path..':wrap() '.. arr.tostring(self.names)):enter()
+  log:trace(self.path..':wrap() '.. tostring(self.names)):enter()
   -- for all modules
-  arr.each(self.names, function(name)
+  self.names:each(function(name)
     local mod = self.modules[name]
     if mod.wrap then
       log:trace(name..':wrap(core)')
@@ -77,7 +77,7 @@ end
 
 -- test modules
 function pkg:test()
-  arr.each(self.names, function(name)
+  self.names:each(function(name)
     local mod = self.modules[name]
     if mod.test then
       log:trace(name..':test(ass)'):enter()

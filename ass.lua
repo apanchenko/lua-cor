@@ -41,6 +41,8 @@ function ass.le(a, b, msg)  return a <= b or error(msg or tostring(a).. ' > ' ..
 function ass.gt(a, b, msg)  return a >  b or error(msg or tostring(a).. ' <= '.. tostring(b)) end
 -- Assert a is greater of equals b
 function ass.ge(a, b, msg)  return a >= b or error(msg or tostring(a).. ' > ' .. tostring(b)) end
+-- Compare tostring representation
+function ass.ts(a, b, msg)  return tostring(a)==tostring(b) or error(msg or tostring(a)..' not '..tostring(b)) end
 
 -- Test asserts
 function ass:test()
