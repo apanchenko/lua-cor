@@ -1,16 +1,14 @@
---[[
-    Library of helper functions to layout Corona display objects.
-]]--
+-- Library of helper functions to layout Corona display objects.
 
 local cfg = require 'src.cfg'
 local ass = require 'src.lua-cor.ass'
-local log = require 'src.lua-cor.log'
 local typ = require 'src.lua-cor.typ'
-local arr = require 'src.lua-cor.arr'
 local wrp = require 'src.lua-cor.wrp'
 local map = require 'src.lua-cor.map'
+local obj = require 'src.lua-cor.obj'
 local widget = require 'widget'
 
+--local lay = obj:extend('spt')
 local lay = setmetatable({}, { __tostring = function() return 'lay' end})
 
 -- Wrap functions to add checks and logs
@@ -23,7 +21,7 @@ function lay:wrap()
 
   wrp.wrap_stc_inf(lay, 'render', target,  obj, opts)
   wrp.wrap_stc_inf(lay, 'to',     obj,     pos, opts)
-  wrp.wrap_stc_inf(lay, 'image',  target,  opts)
+  wrp.wrap_stc_inf(lay, 'img',    target,  opts)
   wrp.wrap_stc_inf(lay, 'column', obj,     space)
   wrp.wrap_stc_inf(lay, 'rows',   obj,     opts)
 end
@@ -39,12 +37,12 @@ end
 -- @param opts.vx         defaults to 0
 -- @param opts.vy         defaults to 0
 -- @param opts.order      render order, 1 renders first, larger renders later
-lay.render_wrap_before = function(target, obj, opts)
+function lay.render_wrap_before(target, obj, opts)
   ass(opts.x or opts.vx, 'lay.render - set opts x or vx')
   ass(opts.y or opts.vy, 'lay.render - set opts y or vy')
 end
-lay.render = function(target, obj, opts)
-  target = target.view or target
+function lay.render(target, obj, opts)
+  target = target.view or target._view or target
   child = obj.view or obj
   child.anchorX = opts.anchorX or 0
   child.anchorY = opts.anchorY or 0
@@ -64,12 +62,23 @@ lay.render = function(target, obj, opts)
 
   return obj
 end
+function lay.insert(group, obj, opts)
+  obj.anchorX = opts.anchorX or 0
+  obj.anchorY = opts.anchorY or 0
+  obj.x = opts.x or (cfg.view.vw * opts.vx)
+  obj.y = opts.y or (cfg.view.vh * opts.vy)
+  if opts.vw then
+    local scale = cfg.view.vw * opts.vw / obj.width
+    obj:scale(scale, scale)
+  end
+  group:insert(opts.z, obj)
+end
 
 -- Animate x,y coordinates
-lay.to = function(obj, pos, params)
+function lay.to(obj, pos, params)
   params.x = pos.x
   params.y = pos.y
-  transition.to(obj.view, params)
+  transition.to(obj, params)
 end
 
 -- Arrange children in column
@@ -99,7 +108,6 @@ function lay.rows(obj, opts)
     local child = view[i]
     child.x = x
     child.y = y
-    --log:trace('child '..tostring(i)..': '..tostring(x)..'x'..tostring(y))
     x = x + child.width + space_x
     count = count + 1
     if count == opts.length then
@@ -114,24 +122,22 @@ end
 -- group      display group insert in
 -- opts       @see render
 -- path       path to image resource
-function lay.image(group, opts)
-  ass.tab(opts, "invalid opts")
+lay.img = function(group, param)
+  ass(group)
+  ass(param)
+  ass.nat(param.z)
 
-  ass.str(opts.path, 'path')
-
-  local w = opts.w or (cfg.view.vw * opts.vw)
-
+  local w = param.w or (cfg.view.vw * param.vw)
   local h;
-  if opts.h then
-    h = opts.h
-  elseif opts.vh then
-    h = cfg.view.vh * opts.vh
+  if param.h then
+    h = param.h
+  elseif param.vh then
+    h = cfg.view.vh * param.vh
   else
-    h = w / (opts.ratio or 1)
+    h = w / (param.ratio or 1)
   end
-
-  local img = display.newImageRect(opts.path, w, h)
-  lay.render(group, img, opts)
+  local img = display.newImageRect(param.path, w, h)
+  lay.insert(group, img, param)
   return img
 end
 
@@ -217,6 +223,50 @@ function lay.sheet(group, sheet, frame, opts)
   local img = display.newImageRect(sheet, frame, opts.w, opts.h)
   lay.render(group, img, opts)
   return img
+end
+
+-- Create new group
+function lay.new_layout()
+  local layout = {}
+  local params = {}
+
+  layout.add = function(name, param)
+    ass(param)
+    ass.nat(param.z)
+    ass.fun(param.fn)
+    params[name] = param
+  end
+
+  layout.new_group = function()
+    local group = display.newGroup()
+    local layers = {}
+
+    ass.nul(group.show)
+    group.show = function(name)
+      ass.str(name)
+      local p = params[name]
+      local z = p.z
+      local o = layers[z]
+      if o then
+        o:removeSelf()
+      end
+      layers[z] = p.fn(group, p)
+    end
+  
+    ass.nul(group.hide)
+    group.hide = function(name)
+      local p = params[name]
+      local o = layers[p.z]
+      if o then
+        o:removeSelf()
+        layers[p.z] = nil
+      end
+    end
+
+    return group
+  end
+
+  return layout
 end
 
 return lay
