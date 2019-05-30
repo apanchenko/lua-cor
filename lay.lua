@@ -1,4 +1,4 @@
--- Library of helper functions to layout Corona display objects.
+-- Library of helper functions to create and layout Corona display objects.
 
 local cfg = require 'src.cfg'
 local ass = require 'src.lua-cor.ass'
@@ -13,20 +13,20 @@ local lay = setmetatable({}, { __tostring = function() return 'lay' end})
 
 -- Wrap functions to add checks and logs
 function lay:wrap()
-  local target = {'target', typ.tab}
+  local group =  {'group', typ.tab}
   local obj    = {'object', typ.tab}
-  local opts   = {'opts', typ.tab, map.tostring}
+  local param  = {'param', typ.tab, map.tostring}
   local pos    = {'pos', typ.tab}
   local space  = {'space', typ.num}
 
-  wrp.wrap_stc_inf(lay, 'render', target,  obj, opts)
-  wrp.wrap_stc_inf(lay, 'to',     obj,     pos, opts)
-  wrp.wrap_stc_inf(lay, 'img',    target,  opts)
+  wrp.wrap_stc_inf(lay, 'insert', group,   obj, param)
+  wrp.wrap_stc_inf(lay, 'to',     obj,     pos, param)
+  wrp.wrap_stc_inf(lay, 'img',    group,   param)
   wrp.wrap_stc_inf(lay, 'column', obj,     space)
-  wrp.wrap_stc_inf(lay, 'rows',   obj,     opts)
+  wrp.wrap_stc_inf(lay, 'rows',   obj,     param)
 end
 
--- Insert obj into target with layout options
+-- Insert obj into target with layout param
 -- @param target          display group insert in
 -- @param obj             object to render
 -- @param opts.w          width in pixels
@@ -36,42 +36,24 @@ end
 -- @param opts.ratio      or height relative to width
 -- @param opts.vx         defaults to 0
 -- @param opts.vy         defaults to 0
--- @param opts.order      render order, 1 renders first, larger renders later
-function lay.render_wrap_before(target, obj, opts)
-  ass(opts.x or opts.vx, 'lay.render - set opts x or vx')
-  ass(opts.y or opts.vy, 'lay.render - set opts y or vy')
+-- @param opts.z          render order, 1 renders first, larger renders later
+lay.insert_wrap_before = function(group, obj, param)
+  ass.fun(group.remove)
+  ass.fun(group.insert)
+  ass.num(param.z)
+  ass(param.x or param.vx, 'lay.insert - set param x or vx')
+  ass(param.y or param.vy, 'lay.insert - set param y or vy')
 end
-function lay.render(target, obj, opts)
-  target = target.view or target._view or target
-  child = obj.view or obj
-  child.anchorX = opts.anchorX or 0
-  child.anchorY = opts.anchorY or 0
-  child.x = opts.x or (cfg.view.vw * opts.vx)
-  child.y = opts.y or (cfg.view.vh * opts.vy)
-
-  if opts.vw then
-    local scale = cfg.view.vw * opts.vw / obj.width
-    child:scale(scale, scale)
-  end
-
-  if opts.order then
-    target:insert(opts.order, child)
-  else
-    target:insert(child)
-  end
-
-  return obj
-end
-function lay.insert(group, obj, opts)
-  obj.anchorX = opts.anchorX or 0
-  obj.anchorY = opts.anchorY or 0
-  obj.x = opts.x or (cfg.view.vw * opts.vx)
-  obj.y = opts.y or (cfg.view.vh * opts.vy)
-  if opts.vw then
-    local scale = cfg.view.vw * opts.vw / obj.width
+lay.insert = function(group, obj, param)
+  obj.anchorX = param.anchorX or 0
+  obj.anchorY = param.anchorY or 0
+  obj.x = param.x or (cfg.view.vw * param.vx)
+  obj.y = param.y or (cfg.view.vh * param.vy)
+  if param.vw then
+    local scale = cfg.view.vw * param.vw / obj.width
     obj:scale(scale, scale)
   end
-  group:insert(opts.z, obj)
+  group:insert(param.z, obj)
 end
 
 -- Animate x,y coordinates
@@ -120,7 +102,7 @@ end
 
 -- Create image
 -- group      display group insert in
--- opts       @see render
+-- opts       @see insert
 -- path       path to image resource
 lay.img = function(group, param)
   ass(group)
@@ -145,19 +127,19 @@ end
 -- @param group   display group insert in
 -- @param opts = {text, vx, vy, x, y, width, height, font, fontSize}
 -- @see https://docs.coronalabs.com/api/library/display/newText.html
-function lay.text(group, opts)
-  if opts.font == nil then
-    opts.font = cfg.font -- select default font
+lay.txt = function(group, param)
+  ass(group)
+  ass(param)
+  ass.nat(param.z)
+  
+  if param.w then
+    param.width = param.w
+  elseif param.vw then
+    param.width = param.vw * cfg.view.vw
   end
 
-  if opts.w then
-    opts.width = opts.w
-  elseif opts.vw then
-    opts.width = opts.vw * cfg.view.vw
-  end
-
-  local text = display.newText(opts)
-  lay.render(group, text, opts)
+  local text = display.newText(param)
+  lay.insert(group, text, param)
   return text
 end
 
@@ -197,35 +179,40 @@ end
 --                    the center of the polygon, and the polygon will be centered
 --                    in relation to the button label. This property is ignored for
 --                    all other shapes. {-20, -25, 40, 0, -20, 25}
-function lay.button(group, opts)
-  if opts.width == nil then
-    opts.width = cfg.view.vw * opts.vw
+lay.btn = function(group, param)
+  ass(group)
+  ass.fun(group.remove)
+  ass.fun(group.insert)
+
+  if param.width == nil then
+    param.width = cfg.view.vw * param.vw
   end
 
-  if opts.height == nil then
-    if opts.vh then
-      opts.height = cfg.view.vh * opts.vh
+  if param.height == nil then
+    if param.vh then
+      param.height = cfg.view.vh * param.vh
     else
-      opts.height = w / (opts.ratio or 1)
+      param.height = w / (param.ratio or 1)
     end
   end
 
-  local button = widget.newButton(opts)
-  lay.render(group, button, opts)
+  local button = widget.newButton(param)
+  ass(button)
+  lay.insert(group, button, param)
   return button
 end
 
 --
-function lay.sheet(group, sheet, frame, opts)
-  assert(sheet)
-  assert(frame)
-  assert(opts.w and opts.h)
-  local img = display.newImageRect(sheet, frame, opts.w, opts.h)
-  lay.render(group, img, opts)
+function lay.sheet(group, param)
+  assert(param.sheet)
+  assert(param.frame)
+  assert(param.w and param.h)
+  local img = display.newImageRect(param.sheet, param.frame, param.w, param.h)
+  lay.insert(group, img, param)
   return img
 end
 
--- Create new group
+-- Create new layout
 function lay.new_layout()
   local layout = {}
   local params = {}

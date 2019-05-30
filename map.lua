@@ -104,6 +104,18 @@ function map.keys(t)
   return keys
 end
 
+-- Call member function by name on all elements of t
+function map.invoke(t, fn_name, ...)
+  local args = {...}
+  map.each(t, function(x) x[fn_name](unpack(args)) end)
+end
+
+-- Call member function by name on all elements of t
+function map.invoke_colon(t, fn_name, ...)
+  local args = {...}
+  map.each(t, function(x) x[fn_name](x, unpack(args)) end)
+end
+
 -- map to string
 function map.tostring(t, sep)
   sep = sep or ', '
