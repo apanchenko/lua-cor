@@ -19,11 +19,14 @@ function lay:wrap()
   local pos    = {'pos', typ.tab}
   local space  = {'space', typ.num}
 
-  wrp.wrap_stc_inf(lay, 'insert', group,   obj, param)
-  wrp.wrap_stc_inf(lay, 'to',     obj,     pos, param)
-  wrp.wrap_stc_inf(lay, 'img',    group,   param)
-  wrp.wrap_stc_inf(lay, 'column', obj,     space)
-  wrp.wrap_stc_inf(lay, 'rows',   obj,     param)
+  wrp.wrap_stc_inf(lay, 'insert',       group,   obj, param)
+  wrp.wrap_stc_inf(lay, 'to',           obj,     pos, param)
+  wrp.wrap_stc_inf(lay, 'new_image',    group,   param)
+  wrp.wrap_stc_inf(lay, 'new_text',     group,   param)
+  wrp.wrap_stc_inf(lay, 'new_sheet',    group,   param)
+  wrp.wrap_stc_inf(lay, 'new_button',   group,   param)
+  wrp.wrap_stc_inf(lay, 'column',       obj,     space)
+  wrp.wrap_stc_inf(lay, 'rows',         obj,     param)
 end
 
 -- Insert obj into target with layout param
@@ -57,14 +60,14 @@ lay.insert = function(group, obj, param)
 end
 
 -- Animate x,y coordinates
-function lay.to(obj, pos, params)
+lay.to = function(obj, pos, params)
   params.x = pos.x
   params.y = pos.y
   transition.to(obj, params)
 end
 
 -- Arrange children in column
-function lay.column(obj, space)
+lay.column = function(obj, space)
   local view = obj.view or obj
   local y = 0
   for i = 1, view.numChildren do
@@ -79,7 +82,7 @@ end
 --    length        maximum length or each row
 --    space_x       horizontal space between elements in a row
 --    space_y       vertical space between rows
-function lay.rows(obj, opts)
+lay.rows = function(obj, opts)
   local view = obj.view or obj
   local space_x = opts.space_x or (cfg.view.vw * opts.space_px)
   local space_y = opts.space_y or (cfg.view.vw * opts.space_py)
@@ -101,10 +104,7 @@ function lay.rows(obj, opts)
 end 
 
 -- Create image
--- group      display group insert in
--- opts       @see insert
--- path       path to image resource
-lay.img = function(group, param)
+lay.new_image = function(group, param)
   ass(group)
   ass(param)
   ass.nat(param.z)
@@ -127,7 +127,7 @@ end
 -- @param group   display group insert in
 -- @param opts = {text, vx, vy, x, y, width, height, font, fontSize}
 -- @see https://docs.coronalabs.com/api/library/display/newText.html
-lay.txt = function(group, param)
+lay.new_text = function(group, param)
   ass(group)
   ass(param)
   ass.nat(param.z)
@@ -179,7 +179,7 @@ end
 --                    the center of the polygon, and the polygon will be centered
 --                    in relation to the button label. This property is ignored for
 --                    all other shapes. {-20, -25, 40, 0, -20, 25}
-lay.btn = function(group, param)
+lay.new_button = function(group, param)
   ass(group)
   ass.fun(group.remove)
   ass.fun(group.insert)
@@ -203,7 +203,7 @@ lay.btn = function(group, param)
 end
 
 --
-function lay.sheet(group, param)
+lay.new_sheet = function(group, param)
   assert(param.sheet)
   assert(param.frame)
   assert(param.w and param.h)
