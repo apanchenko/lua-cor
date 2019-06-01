@@ -70,7 +70,7 @@ end
 -- get random module
 function pkg:random(pred)
   if pred then
-    return arr.random(map.select(self.modules, pred))
+    return map.select(self.modules, pred):random()
   end
   return map.random(self.modules)
 end

@@ -1,7 +1,7 @@
-local ass   = require 'src.lua-cor.ass'
-local typ   = require 'src.lua-cor.typ'
-local wrp   = require 'src.lua-cor.wrp'
-local log   = require 'src.lua-cor.log'
+local ass = require 'src.lua-cor.ass'
+local typ = require 'src.lua-cor.typ'
+local wrp = require 'src.lua-cor.wrp'
+local arr = require 'src.lua-cor.arr'
 
 -- name to value
 local map = setmetatable({}, {__tostring=function() return 'map' end})
@@ -35,13 +35,13 @@ end
 
 -- return array of values selected by predicate function
 function map.select(t, pred)
-  local arr = {}
+  local result = arr()
   for k, v in pairs(t) do
     if pred(v, k) then
-      arr[#arr + 1] = v
+      result:push(v)
     end
   end
-  return arr
+  return result
 end
 
 -- number of elements
@@ -97,9 +97,9 @@ end
 
 -- return array of keys
 function map.keys(t)
-  local keys = {}
+  local keys = arr()
   for k, v in pairs(t) do
-    keys[#keys + 1] = k
+    keys:push(k)
   end
   return keys
 end
