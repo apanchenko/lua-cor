@@ -127,6 +127,24 @@ function map.tostring(t, sep)
   end).. '}'
 end
 
+-- make a new map joining arguments
+function map.merge_wrap_before(...)
+  local args = {...}
+  map.each(args, function(arg)
+    ass.tab(arg)
+  end)
+end
+function map.merge(...)
+  local result = {}
+  local args = {...}
+  map.each(args, function(arg)
+    map.each(arg, function(v, k)
+      result[k] = v
+    end)
+  end)
+  return result
+end
+
 -- MODULE ---------------------------------------------------------------------
 function map:wrap()
   wrp.wrap_stc_inf(map, 'all',    {'t', typ.tab}, {'fn', typ.fun})
@@ -144,6 +162,7 @@ function map:test()
   ass(map.all(t, function(v) return #v > 2 end))
   ass.eq(map.count(t), 3)
   ass.eq(map.key(t, 'mes'), 'month')
+  --ass.eq(map.tostring(map.merge({a=1, b=2}, {b=3, c=4})), '{a=1, b=3, c=4}')
   --ass.eq(map.tostring(t), '{week=semana, month=mes, year=ano}')
 end
 
