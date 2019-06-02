@@ -7,7 +7,7 @@
 local bld = require 'src.lua-cor.bld'
 
 -- Create log
-local log = setmetatable({ depth = 0 }, { __tostring = function() return 'log' end})
+local log = setmetatable({ depth = 0, modules = {} }, { __tostring = function() return 'log' end })
 
 --
 local function out(...)
@@ -54,4 +54,41 @@ function log:exit()
   self.depth = self.depth - 1
 end
 
-return log
+--
+local _add_fn = function(target, id, fn)
+  target[fn] = function(me, ...)
+    if log.modules[id] then
+      log[fn](log, ...)
+    end
+    return me
+  end
+end
+
+-- Create log subsystem
+log._get_module = function(id)
+  local subsystem = {}
+
+  _add_fn(subsystem, id, 'info')
+  _add_fn(subsystem, id, 'trace')
+  _add_fn(subsystem, id, 'warning')
+  _add_fn(subsystem, id, 'error')
+  _add_fn(subsystem, id, 'enter')
+  _add_fn(subsystem, id, 'exit')
+
+  subsystem.enable = function()
+    log.modules[id] = true
+    return subsystem
+  end
+
+  subsystem.on_cfg = function(me, cfg)
+    log:on_cfg(cfg)
+  end
+
+  subsystem.get_module = function(id)
+    return log._get_module(id)
+  end
+  
+  return subsystem
+end
+
+return log._get_module('')

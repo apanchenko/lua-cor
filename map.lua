@@ -105,15 +105,25 @@ function map.keys(t)
 end
 
 -- Call member function by name on all elements of t
+-- TODO: rename each_call
 function map.invoke(t, fn_name, ...)
   local args = {...}
   map.each(t, function(x) x[fn_name](unpack(args)) end)
 end
 
 -- Call member function by name on all elements of t
+-- TODO: rename each_call_colon
 function map.invoke_colon(t, fn_name, ...)
   local args = {...}
   map.each(t, function(x) x[fn_name](x, unpack(args)) end)
+end
+
+-- call member function if it exists
+function map.call_fn(t, name, ...)
+  local fn = t[name]
+  if typ.fun(fn) then
+    fn(...)
+  end
 end
 
 -- map to string
@@ -128,12 +138,6 @@ function map.tostring(t, sep)
 end
 
 -- make a new map joining arguments
-function map.merge_wrap_before(...)
-  local args = {...}
-  map.each(args, function(arg)
-    ass.tab(arg)
-  end)
-end
 function map.merge(...)
   local result = {}
   local args = {...}
@@ -143,6 +147,16 @@ function map.merge(...)
     end)
   end)
   return result
+end
+
+-- add rest arguments to first
+function map.add(receiver, ...)
+  local args = {...}
+  map.each(args, function(arg)
+    map.each(arg, function(v, k)
+      receiver[k] = v
+    end)
+  end)  
 end
 
 -- MODULE ---------------------------------------------------------------------

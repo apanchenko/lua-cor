@@ -30,6 +30,7 @@ function wrp.fn(t, fn_name, arg_infos, opts)
     return;
   end
   local log_fn = opts.log or log.trace
+
   local callconv = opts.call or wrp.call_subtable
 
   local call = 'wrp.fn('..t_name..', '..fn_name..')'
@@ -102,7 +103,17 @@ function wrp.fn(t, fn_name, arg_infos, opts)
     local type_fn = t_name..'.'..fn_name
     t[fn_name] = function(...)
       log_fn(log, type_fn..'('..arguments(type_fn, {...})..')'):enter()
+
+      -- check arguments before call
+      local before = t[fn_name..'_wrap_before']
+      if before then before(...) end
+
       local result = fn(...)
+
+      -- check self state and result after call
+      local after = t[fn_name..'_wrap_after']
+      if after then after(...) end
+      
       log:exit()
       if result then -- log function output
         log_fn(log, fn_name..' ->', result)

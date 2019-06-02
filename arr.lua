@@ -271,14 +271,12 @@ function arr:remove_random()
 end
 
 -- Find index to insert an object into sorted array so that array remains sorted
--- @param low      min search range bound
--- @param high     max search range bound
--- @param v        find place for this object
--- @param lower    compare function (a, b) returns a < b
--- @return         number [low, high]
+--   low      min search range bound
+--   high     max search range bound
+--   v        find place for this object
+--   lower    compare function (a, b) returns a < b
+-- return         index
 function arr:find_index(low, high, v, lower)
-  --todo ass.le(1, low)
-  --todo ass.le(low, high)
   while low < high do
     local mid = mfloor((low + high) * 0.5)
     if lower(self[mid], v) then
@@ -332,7 +330,7 @@ function arr:wrap(core)
   wrp.wrap_stc_inf(arr, 'random',         t)
   wrp.wrap_stc_inf(arr, 'random_sample',  t, n)
   wrp.wrap_stc_inf(arr, 'remove_random',  t)
-  wrp.wrap_stc_inf(arr, 'find_index',     t, {'low', typ.num}, {'high', typ.num}, {'obj', typ.any}, {'is_lower', typ.fun})
+  wrp.wrap_stc_inf(arr, 'find_index',     t, {'low', typ.nat}, {'high', typ.nat}, {'obj', typ.any}, {'is_lower', typ.fun})
 end
 
 -- Test arr
@@ -430,8 +428,8 @@ function arr:test(ass)
   -- find_index
   local cmp = function(a, b) return a < b end
   ass.eq(arr.find_index({1},   1, 2, 0, cmp), 1, 'test find_index - front')
-  ass.eq(arr.find_index({1,3}, 1, 3, 2, cmp), 2, 'test find_index - middle')
   ass.eq(arr.find_index({1},   1, 2, 2, cmp), 2, 'test find_index - back')
+  ass.eq(arr.find_index({1,3}, 1, 2, 2, cmp), 2, 'test find_index - middle')
   ass.eq(arr.find_index({},    1, 1, 9, cmp), 1, 'test find_index - empty')
 end
 

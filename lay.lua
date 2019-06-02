@@ -6,7 +6,11 @@ local typ = require 'src.lua-cor.typ'
 local wrp = require 'src.lua-cor.wrp'
 local map = require 'src.lua-cor.map'
 local obj = require 'src.lua-cor.obj'
+local arr = require 'src.lua-cor.arr'
+local log = (require 'src.lua-cor.log').get_module('lay')
 local widget = require 'widget'
+
+log.enable()
 
 --local lay = obj:extend('spt')
 local lay = setmetatable({}, { __tostring = function() return 'lay' end})
@@ -29,6 +33,10 @@ function lay:wrap()
   wrp.wrap_stc_inf(lay, 'rows',         obj,     param)
 end
 
+local cmp_z = function(a, b)
+  return a._z < b._z
+end
+
 -- Insert obj into target with layout param
 -- @param target          display group insert in
 -- @param obj             object to render
@@ -41,8 +49,15 @@ end
 -- @param opts.vy         defaults to 0
 -- @param opts.z          render order, 1 renders first, larger renders later
 lay.insert_wrap_before = function(group, obj, param)
+  --TODO: check all args in lay.wrap
+  ass(group)
   ass.fun(group.remove)
   ass.fun(group.insert)
+
+  ass(obj)
+  ass.nul(obj._z)
+  ass.fun(obj.removeSelf)
+
   ass.num(param.z)
   ass(param.x or param.vx, 'lay.insert - set param x or vx')
   ass(param.y or param.vy, 'lay.insert - set param y or vy')
@@ -56,7 +71,12 @@ lay.insert = function(group, obj, param)
     local scale = cfg.view.vw * param.vw / obj.width
     obj:scale(scale, scale)
   end
-  group:insert(param.z, obj)
+
+  obj._z = param.z
+
+  local index = arr.find_index(group, 1, group.numChildren + 1, obj, cmp_z)
+  log:trace('insert', map.tostring(param), 'at', index)
+  group:insert(index, obj)
 end
 
 -- Animate x,y coordinates
@@ -67,11 +87,10 @@ lay.to = function(obj, pos, params)
 end
 
 -- Arrange children in column
-lay.column = function(obj, space)
-  local view = obj.view or obj
-  local y = 0
-  for i = 1, view.numChildren do
-    local child = view[i]
+lay.column = function(group, space)
+  local y = group[1].y
+  for i = 1, group.numChildren do
+    local child = group[i]
     child.y = y
     y = y + child.height + space
   end
@@ -212,42 +231,85 @@ lay.new_sheet = function(group, param)
   return img
 end
 
--- Create new layout
-function lay.new_layout()
-  local layout = {}
-  local params = {}
+local _ = {}
 
-  layout.add = function(name, param)
+-- iterate group childs if any
+_.each_child = function(obj, fn)
+  if typ.num(obj.numChildren) then
+    for index = 1, obj.numChildren do
+      local child = obj[index]
+      if child then
+        fn(index, child)
+      end
+    end
+  end
+end
+
+-- log layout tree
+_.walk_tree = function(index, obj)
+  log:trace(index, obj._id, '[', obj.x, obj.y, obj.width, obj.height, ']', obj.numChildren):enter()
+  _.each_child(obj, _.walk_tree)
+  log:exit()
+end
+
+
+-- Create new layout.
+-- Layout represents a reusable visual design of UI element:
+--   .add         add parameterised childs
+--   .new_group   create view with this layout
+function lay.new_layout()
+  local layout = {} -- interface .add, .new_group
+  local params = {} -- layout id:param container
+
+  layout.add = function(id, param)
     ass(param)
     ass.nat(param.z)
     ass.fun(param.fn)
-    params[name] = param
+    params[id] = param
+    return layout
   end
 
-  layout.new_group = function()
-    local group = display.newGroup()
+  layout.new_group = function(view)
+    local group  = view or display.newGroup()
     local layers = {}
 
-    ass.nul(group.show)
-    group.show = function(name)
-      ass.str(name)
-      local p = params[name]
-      local z = p.z
-      local o = layers[z]
+    group.show = function(id)
+      ass.str(id)
+      local p = params[id]
+      local o = layers[p.z]
       if o then
         o:removeSelf()
       end
-      layers[z] = p.fn(group, p)
+      o = p.fn(group, p)
+      o._id = id
+      layers[p.z] = o
+      return group
     end
-  
-    ass.nul(group.hide)
-    group.hide = function(name)
-      local p = params[name]
+
+    group.hide = function(id)
+      local p = params[id]
       local o = layers[p.z]
       if o then
         o:removeSelf()
         layers[p.z] = nil
       end
+      return group
+    end
+
+    group.column = function(space)
+      local y = group[1].y
+      for i = 1, group.numChildren do
+        local child = group[i]
+        child.y = y
+        y = y + child.height + space
+      end
+      return group
+    end
+
+    group.walk_tree = function()
+      log:trace('----------walk_tree {', group._id)
+      _.walk_tree(0, group)
+      log:trace('--------------------}')
     end
 
     return group
