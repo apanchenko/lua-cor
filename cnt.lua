@@ -1,7 +1,7 @@
 local ass   = require 'src.lua-cor.ass'
 local typ   = require 'src.lua-cor.typ'
 local wrp   = require 'src.lua-cor.wrp'
-local log   = require 'src.lua-cor.log'
+local log   = require('src.lua-cor.log').get('')
 local map   = require 'src.lua-cor.map'
 local obj   = require 'src.lua-cor.obj'
 
@@ -19,16 +19,16 @@ function cnt:wrap()
   local count = {'count', typ.num}
   local fn    = {'fn', typ.fun}
 
-  wrp.wrap_tbl_inf(cnt, 'new')
-  wrp.wrap_sub_inf(cnt, 'is_empty')
-  wrp.wrap_sub_inf(cnt, 'push',     obj)
-  wrp.wrap_sub_inf(cnt, 'pull',     id, count)
-  wrp.wrap_sub_inf(cnt, 'remove',   id)
-  wrp.wrap_sub_inf(cnt, 'count',    id)
-  wrp.wrap_sub_inf(cnt, 'any',      fn)
-  wrp.wrap_sub_inf(cnt, 'each',     fn)
-  wrp.wrap_sub_inf(cnt, 'random')
-  wrp.wrap_sub_inf(cnt, 'clear')
+  wrp.wrap_tbl(log.info, cnt, 'new')
+  wrp.wrap_sub(log.info, cnt, 'is_empty')
+  wrp.wrap_sub(log.info, cnt, 'push',     obj)
+  wrp.wrap_sub(log.info, cnt, 'pull',     id, count)
+  wrp.wrap_sub(log.info, cnt, 'remove',   id)
+  wrp.wrap_sub(log.info, cnt, 'count',    id)
+  wrp.wrap_sub(log.info, cnt, 'any',      fn)
+  wrp.wrap_sub(log.info, cnt, 'each',     fn)
+  wrp.wrap_sub(log.info, cnt, 'random')
+  wrp.wrap_sub(log.info, cnt, 'clear')
 end
 
 -- Create cnt instance
@@ -146,7 +146,7 @@ function cnt:test()
   res = i:push({id='b', count=2, copy=copy})
   res = i:push({id='b', count=3, copy=copy})
   ass.eq(res, 5)
-  log:trace('cnttest - '.. tostring(i))
+  log.trace('cnttest - '.. tostring(i))
 
   b = i:pull('b', 4)
   ass.eq(b.count, 4)

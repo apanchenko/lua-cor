@@ -7,10 +7,8 @@ local wrp = require 'src.lua-cor.wrp'
 local map = require 'src.lua-cor.map'
 local obj = require 'src.lua-cor.obj'
 local arr = require 'src.lua-cor.arr'
-local log = (require 'src.lua-cor.log').get_module('lay')
+local log = require('src.lua-cor.log').get('lay').enable()
 local widget = require 'widget'
-
-log.enable()
 
 --local lay = obj:extend('spt')
 local lay = setmetatable({}, { __tostring = function() return 'lay' end})
@@ -23,14 +21,14 @@ function lay:wrap()
   local pos    = {'pos', typ.tab}
   local space  = {'space', typ.num}
 
-  wrp.wrap_stc_inf(lay, 'insert',       group,   obj, param)
-  wrp.wrap_stc_inf(lay, 'to',           obj,     pos, param)
-  wrp.wrap_stc_inf(lay, 'new_image',    group,   param)
-  wrp.wrap_stc_inf(lay, 'new_text',     group,   param)
-  wrp.wrap_stc_inf(lay, 'new_sheet',    group,   param)
-  wrp.wrap_stc_inf(lay, 'new_button',   group,   param)
-  wrp.wrap_stc_inf(lay, 'column',       obj,     space)
-  wrp.wrap_stc_inf(lay, 'rows',         obj,     param)
+  wrp.wrap_stc(log.info, lay, 'insert',       group,   obj, param)
+  wrp.wrap_stc(log.info, lay, 'to',           obj,     pos, param)
+  wrp.wrap_stc(log.info, lay, 'new_image',    group,   param)
+  wrp.wrap_stc(log.info, lay, 'new_text',     group,   param)
+  wrp.wrap_stc(log.info, lay, 'new_sheet',    group,   param)
+  wrp.wrap_stc(log.info, lay, 'new_button',   group,   param)
+  wrp.wrap_stc(log.info, lay, 'column',       obj,     space)
+  wrp.wrap_stc(log.info, lay, 'rows',         obj,     param)
 end
 
 local cmp_z = function(a, b)
@@ -75,7 +73,7 @@ lay.insert = function(group, obj, param)
   obj._z = param.z
 
   local index = arr.find_index(group, 1, group.numChildren + 1, obj, cmp_z)
-  log:trace('insert', map.tostring(param), 'at', index)
+  --log.trace('insert', map.tostring(param), 'at', index)
   group:insert(index, obj)
 end
 
@@ -247,9 +245,10 @@ end
 
 -- log layout tree
 _.walk_tree = function(index, obj)
-  log:trace(index, obj._id, '[', obj.x, obj.y, obj.width, obj.height, ']', obj.numChildren):enter()
+  log.trace(index, obj._id, '[', obj.x, obj.y, obj.width, obj.height, ']', obj.numChildren)
+  log.enter()
   _.each_child(obj, _.walk_tree)
-  log:exit()
+  log.exit()
 end
 
 
@@ -307,9 +306,9 @@ function lay.new_layout()
     end
 
     group.walk_tree = function()
-      log:trace('----------walk_tree {', group._id)
+      log.trace('----------walk_tree {', group._id)
       _.walk_tree(0, group)
-      log:trace('--------------------}')
+      log.trace('--------------------}')
     end
 
     return group

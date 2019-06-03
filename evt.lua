@@ -1,5 +1,5 @@
 local ass = require 'src.lua-cor.ass'
-local log = require 'src.lua-cor.log'
+local log = require('src.lua-cor.log').get('')
 local typ = require 'src.lua-cor.typ'
 local obj = require 'src.lua-cor.obj'
 local wrp = require 'src.lua-cor.wrp'
@@ -38,8 +38,8 @@ end
 -- MODULE ---------------------------------------------------------------------
 function evt:wrap()
   ass.eq(tostring(evt), 'evt')
-  wrp.wrap_sub_trc(evt, 'add',    {'listener', typ.tab})
-  wrp.wrap_sub_trc(evt, 'remove', {'listener', typ.tab})
+  wrp.wrap_sub(log.trace, evt, 'add',    {'listener', typ.tab})
+  wrp.wrap_sub(log.trace, evt, 'remove', {'listener', typ.tab})
   --TODO ellipsis wrp.fn(evt, 'call', {{'name'}})
 end
 

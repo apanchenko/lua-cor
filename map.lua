@@ -2,6 +2,7 @@ local ass = require 'src.lua-cor.ass'
 local typ = require 'src.lua-cor.typ'
 local wrp = require 'src.lua-cor.wrp'
 local arr = require 'src.lua-cor.arr'
+local log = require('src.lua-cor.log').get('map')
 
 -- name to value
 local map = setmetatable({}, {__tostring=function() return 'map' end})
@@ -161,11 +162,11 @@ end
 
 -- MODULE ---------------------------------------------------------------------
 function map:wrap()
-  wrp.wrap_stc_inf(map, 'all',    {'t', typ.tab}, {'fn', typ.fun})
-  wrp.wrap_stc_inf(map, 'each',   {'t', typ.tab}, {'fn', typ.fun})
-  wrp.wrap_stc_inf(map, 'select', {'t', typ.tab}, {'pred', typ.fun})
-  wrp.wrap_stc_inf(map, 'count',  {'t', typ.tab})
-  wrp.wrap_stc_inf(map, 'random', {'t', typ.tab})
+  wrp.wrap_stc(log.info, map, 'all',    {'t', typ.tab}, {'fn', typ.fun})
+  wrp.wrap_stc(log.info, map, 'each',   {'t', typ.tab}, {'fn', typ.fun})
+  wrp.wrap_stc(log.info, map, 'select', {'t', typ.tab}, {'pred', typ.fun})
+  wrp.wrap_stc(log.info, map, 'count',  {'t', typ.tab})
+  wrp.wrap_stc(log.info, map, 'random', {'t', typ.tab})
 end
 
 --

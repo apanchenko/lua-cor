@@ -1,4 +1,4 @@
-local log   = require 'src.lua-cor.log'
+local log   = require('src.lua-cor.log').get('')
 local typ   = require 'src.lua-cor.typ'
 local ass   = require 'src.lua-cor.ass'
 local arr   = require 'src.lua-cor.arr'
@@ -11,17 +11,14 @@ wrp.call_static   = 1 -- library function, called with '.'
 wrp.call_table    = 2 -- class function, called on this table (or subtable) with ':'. (e.g. vec:new)
 wrp.call_subtable = 3 -- instance function, called on subtable with ':', default (e.g. vec:length)
 
-function wrp.wrap_stc_inf(t, fname, ...)  wrp.fn(t, fname, {...}, {call=wrp.call_static,   log=log.info}) end
-function wrp.wrap_tbl_inf(t, fname, ...)  wrp.fn(t, fname, {...}, {call=wrp.call_table,    log=log.info}) end
-function wrp.wrap_sub_inf(t, fname, ...)  wrp.fn(t, fname, {...}, {call=wrp.call_subtable, log=log.info}) end
-function wrp.wrap_stc_trc(t, fname, ...)  wrp.fn(t, fname, {...}, {call=wrp.call_static,   log=log.trace}) end
-function wrp.wrap_tbl_trc(t, fname, ...)  wrp.fn(t, fname, {...}, {call=wrp.call_table,    log=log.trace}) end
-function wrp.wrap_sub_trc(t, fname, ...)  wrp.fn(t, fname, {...}, {call=wrp.call_subtable, log=log.trace}) end
+wrp.wrap_stc = function(flog, t, fname, ...)  wrp.fn(flog, t, fname, {...}, {call=wrp.call_static}) end
+wrp.wrap_tbl = function(flog, t, fname, ...)  wrp.fn(flog, t, fname, {...}, {call=wrp.call_table}) end
+wrp.wrap_sub = function(flog, t, fname, ...)  wrp.fn(flog, t, fname, {...}, {call=wrp.call_subtable}) end
 
 -- wrap function t.fn_name
 -- @param arg_info - array of argument descriptions {name, type, tstr}
 -- @param opts     - {name:str, log:, call}
-function wrp.fn(t, fn_name, arg_infos, opts)
+wrp.fn = function(flog, t, fn_name, arg_infos, opts)
   opts = opts or {}
 
   local t_name = tostring(t)
@@ -29,16 +26,15 @@ function wrp.fn(t, fn_name, arg_infos, opts)
     error('wrp.fn t name is '.. tostring(t_name))
     return;
   end
-  local log_fn = opts.log or log.trace
-
   local callconv = opts.call or wrp.call_subtable
 
   local call = 'wrp.fn('..t_name..', '..fn_name..')'
-  log:info(call):enter()
+  log.info(call)
+  log.enter()
 
   ass.tab(t, 'first arg is not a table in '.. call)
   ass.str(fn_name, 'fn_name is not a string in '.. call)
-  ass.fun(log_fn)
+  ass.fun(flog)
   ass.nat(callconv)
 
   -- prepare arg_infos array
@@ -68,7 +64,7 @@ function wrp.fn(t, fn_name, arg_infos, opts)
     end)(info[2])
     ass(typ(info.type))
 
-    log:info('arg '.. info.name.. ' of '.. tostring(info.type))
+    log.info('arg '.. info.name.. ' of '.. tostring(info.type))
 
     -- third is tostring function
     info.tostring = info[3] or tostring 
@@ -88,7 +84,7 @@ function wrp.fn(t, fn_name, arg_infos, opts)
       local info = arg_infos[i]
       local argstr = info.tostring(arg)
       local argtype = '['..type(arg)..']'
-      --log:info(call.. ' check arg '.. tostring(i).. ': '.. info.name..'='..argstr.. ' is of '.. tostring(info.type))
+      --log.info(call.. ' check arg '.. tostring(i).. ': '.. info.name..'='..argstr.. ' is of '.. tostring(info.type))
       ass(info.type(arg), call..' '..info.name..'='..argstr..' is not of '.. tostring(info.type))
       if #res > 0 then
         res = res..', '
@@ -102,7 +98,7 @@ function wrp.fn(t, fn_name, arg_infos, opts)
   if callconv == wrp.call_static then
     local type_fn = t_name..'.'..fn_name
     t[fn_name] = function(...)
-      log_fn(log, type_fn..'('..arguments(type_fn, {...})..')'):enter()
+      flog(type_fn..'('..arguments(type_fn, {...})..')').enter()
 
       -- check arguments before call
       local before = t[fn_name..'_wrap_before']
@@ -114,9 +110,10 @@ function wrp.fn(t, fn_name, arg_infos, opts)
       local after = t[fn_name..'_wrap_after']
       if after then after(...) end
       
-      log:exit()
+      flog().exit()
+
       if result then -- log function output
-        log_fn(log, fn_name..' ->', result)
+        flog(fn_name..' ->', result)
       end      
       return result
     end
@@ -136,7 +133,7 @@ function wrp.fn(t, fn_name, arg_infos, opts)
       end
 
       local call = tostring(self)..':['..t_name..']'..fn_name
-      log_fn(log, call..'('..arguments(call, args)..')'):enter()
+      flog(call..'('..arguments(call, args)..')').enter()
 
       -- check self state before call
       local fn_before = self[fn_name .. '_wrap_before']
@@ -153,16 +150,16 @@ function wrp.fn(t, fn_name, arg_infos, opts)
         fn_after(...)
       end
 
-      -- log result
-      log:exit()
+      flog().exit()
+
       if result then -- log function output
-        log_fn(log, fn_name..' ->', result)
+        flog(fn_name..' ->', result)
       end
 
       return result
     end
   end
-  log:exit()
+  log.exit()
 end
 
 return wrp

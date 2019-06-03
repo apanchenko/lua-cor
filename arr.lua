@@ -1,8 +1,8 @@
---[[
-    Array.
-    As you remember, indeces in Lua arrays start with 1.
-    Thanks to Marcus Irven
-]]--
+-- Array.
+-- As you remember, indeces in Lua arrays start with 1.
+-- Thanks to Marcus Irven
+
+local log = require('src.lua-cor.log').get('arr')
 
 local mfloor  = math.floor
 local mrandom = math.random
@@ -301,36 +301,36 @@ function arr:wrap(core)
   local f   = {'f', typ.fun}
   local n   = {'n', typ.nat}
 
-  --wrp.wrap_stc_inf(arr, 'join',           t, {'sep', typ.str})
-  wrp.wrap_stc_inf(arr, 'is_empty',       t)
-  wrp.wrap_stc_inf(arr, 'length',         t)
-  wrp.wrap_stc_inf(arr, 'push',           t, v)
-  wrp.wrap_stc_inf(arr, 'pop',            t)
-  wrp.wrap_stc_inf(arr, 'shift',          t)
-  wrp.wrap_stc_inf(arr, 'unshift',        t, v)
-  wrp.wrap_stc_inf(arr, 'clear',          t)
-  wrp.wrap_stc_inf(arr, 'each',           t, f)
-  wrp.wrap_stc_inf(arr, 'map',            t, f)
-  wrp.wrap_stc_inf(arr, 'reduce',         t, {'memo', typ.any}, f)
-  wrp.wrap_stc_inf(arr, 'detect',         t, f)
-  wrp.wrap_stc_inf(arr, 'select',         t, f)
-  wrp.wrap_stc_inf(arr, 'reject',         t, f)
-  wrp.wrap_stc_inf(arr, 'all',            t, f)
-  wrp.wrap_stc_inf(arr, 'any',            t, f)
-  wrp.wrap_stc_inf(arr, 'include',        t, v)
+  --wrp.wrap_stc(log.info, arr, 'join',           t, {'sep', typ.str})
+  wrp.wrap_stc(log.info, arr, 'is_empty',       t)
+  wrp.wrap_stc(log.info, arr, 'length',         t)
+  wrp.wrap_stc(log.info, arr, 'push',           t, v)
+  wrp.wrap_stc(log.info, arr, 'pop',            t)
+  wrp.wrap_stc(log.info, arr, 'shift',          t)
+  wrp.wrap_stc(log.info, arr, 'unshift',        t, v)
+  wrp.wrap_stc(log.info, arr, 'clear',          t)
+  wrp.wrap_stc(log.info, arr, 'each',           t, f)
+  wrp.wrap_stc(log.info, arr, 'map',            t, f)
+  wrp.wrap_stc(log.info, arr, 'reduce',         t, {'memo', typ.any}, f)
+  wrp.wrap_stc(log.info, arr, 'detect',         t, f)
+  wrp.wrap_stc(log.info, arr, 'select',         t, f)
+  wrp.wrap_stc(log.info, arr, 'reject',         t, f)
+  wrp.wrap_stc(log.info, arr, 'all',            t, f)
+  wrp.wrap_stc(log.info, arr, 'any',            t, f)
+  wrp.wrap_stc(log.info, arr, 'include',        t, v)
   --invoke
-  wrp.wrap_stc_inf(arr, 'pluck',          t, {'name', typ.str})
-  wrp.wrap_stc_inf(arr, 'min',            t, f)
-  wrp.wrap_stc_inf(arr, 'max',            t, f)
-  wrp.wrap_stc_inf(arr, 'reverse',        t)
-  wrp.wrap_stc_inf(arr, 'first',          t, n)
-  wrp.wrap_stc_inf(arr, 'rest',           t, n)
-  wrp.wrap_stc_inf(arr, 'slice',          t, n, n)
-  wrp.wrap_stc_inf(arr, 'flatten',        t)
-  wrp.wrap_stc_inf(arr, 'random',         t)
-  wrp.wrap_stc_inf(arr, 'random_sample',  t, n)
-  wrp.wrap_stc_inf(arr, 'remove_random',  t)
-  wrp.wrap_stc_inf(arr, 'find_index',     t, {'low', typ.nat}, {'high', typ.nat}, {'obj', typ.any}, {'is_lower', typ.fun})
+  wrp.wrap_stc(log.info, arr, 'pluck',          t, {'name', typ.str})
+  wrp.wrap_stc(log.info, arr, 'min',            t, f)
+  wrp.wrap_stc(log.info, arr, 'max',            t, f)
+  wrp.wrap_stc(log.info, arr, 'reverse',        t)
+  wrp.wrap_stc(log.info, arr, 'first',          t, n)
+  wrp.wrap_stc(log.info, arr, 'rest',           t, n)
+  wrp.wrap_stc(log.info, arr, 'slice',          t, n, n)
+  wrp.wrap_stc(log.info, arr, 'flatten',        t)
+  wrp.wrap_stc(log.info, arr, 'random',         t)
+  wrp.wrap_stc(log.info, arr, 'random_sample',  t, n)
+  wrp.wrap_stc(log.info, arr, 'remove_random',  t)
+  wrp.wrap_stc(log.info, arr, 'find_index',     t, {'low', typ.nat}, {'high', typ.nat}, {'obj', typ.any}, {'is_lower', typ.fun})
 end
 
 -- Test arr

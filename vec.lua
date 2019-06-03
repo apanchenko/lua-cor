@@ -6,6 +6,7 @@ local obj   = require 'src.lua-cor.obj'
 local typ   = require 'src.lua-cor.typ'
 local ass   = require 'src.lua-cor.ass'
 local wrp   = require 'src.lua-cor.wrp'
+local log = require('src.lua-cor.log').get('obj')
 
 -- Define 2d vector type
 local vec = obj:extend('vec')
@@ -82,17 +83,17 @@ vec.one = vec(1, 1)
 
 -- Wrap vector functions
 function vec:wrap()
-  wrp.wrap_stc_inf(vec, 'copy',   {'from', typ.tab}, {'to', typ.tab})
-  wrp.wrap_stc_inf(vec, 'center', {'obj', typ.tab})
+  wrp.wrap_stc(log.info, vec, 'copy',   {'from', typ.tab}, {'to', typ.tab})
+  wrp.wrap_stc(log.info, vec, 'center', {'obj', typ.tab})
   
-  wrp.wrap_tbl_inf(vec, 'new',    {'x', typ.num}, {'y', typ.num})
-  wrp.wrap_tbl_inf(vec, 'random', {'min', vec}, {'max', vec})
-  wrp.wrap_tbl_inf(vec, 'from',   {'obj', typ.tab})
+  wrp.wrap_tbl(log.info, vec, 'new',    {'x', typ.num}, {'y', typ.num})
+  wrp.wrap_tbl(log.info, vec, 'random', {'min', vec}, {'max', vec})
+  wrp.wrap_tbl(log.info, vec, 'from',   {'obj', typ.tab})
   
-  wrp.wrap_sub_inf(vec, 'length2')
-  wrp.wrap_sub_inf(vec, 'round')
-  wrp.wrap_sub_inf(vec, 'to',     {'obj', typ.tab})
-  wrp.wrap_sub_inf(vec, 'abs')
+  wrp.wrap_sub(log.info, vec, 'length2')
+  wrp.wrap_sub(log.info, vec, 'round')
+  wrp.wrap_sub(log.info, vec, 'to',     {'obj', typ.tab})
+  wrp.wrap_sub(log.info, vec, 'abs')
 end
 
 -- Self test

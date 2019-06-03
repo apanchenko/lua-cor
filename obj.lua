@@ -7,6 +7,8 @@
     defines this. Should we prohibit extending instances?
 ]]--
 
+local log = require('src.lua-cor.log').get('obj')
+
 -- Create obj
 local mt        = {__tostring = function(self) return self.tname end}
 local obj       = setmetatable({tname = 'obj'}, mt)
@@ -45,8 +47,8 @@ function obj:wrap()
   local typ = require 'src.lua-cor.typ'
   local ass = require 'src.lua-cor.ass'
   local typename = {'typename', typ.str}
-  wrp.wrap_stc_inf(obj, 'create_lib', typename)
-  wrp.wrap_tbl_inf(obj, 'extend',     typename)
+  wrp.wrap_stc(log.info, obj, 'create_lib', typename)
+  wrp.wrap_tbl(log.info, obj, 'extend',     typename)
 end
 
 -- test obj

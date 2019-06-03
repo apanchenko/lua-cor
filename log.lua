@@ -1,94 +1,65 @@
---[[
-    Log system.
-    Have output funcitons for messages of different severity: info, trace, warning, error.
-    Active severity is selected by cfg.build setting.
-]]--
+-- Log system.
+-- Have output functions for messages of different severity: info, trace, warning, error.
+-- Active severity is selected by cfg.build setting.
 
-local bld = require 'src.lua-cor.bld'
+-- modules cache
+local mods = {}
 
--- Create log
-local log = setmetatable({ depth = 0, modules = {} }, { __tostring = function() return 'log' end })
+-- stack depth represented as messages indentation
+local depth = 0
 
---
-local function out(...)
-  local str = string.rep('. ', log.depth)
+-- raw output
+local out = function(...)
+  if #arg == 0 then
+    return
+  end
+  local str = string.rep('. ', depth)
   for i = 1, #arg do
     str = str.. tostring(arg[i]).. ' '
   end
   print(str)
 end
 
--- Configure log
-function log:on_cfg(cfg)
-  -- dumb is always silent
-  dumb = function(me) return me end
+-- global trace/info configuration
+local enable_info = true
+local enable_trace = true
+local log = {}
 
-  -- info for debug configuration only
-  if cfg.build.id <= bld.debug.id then
-    self.info  = function(me, ...) out(...) return me end
-  else
-    self.info  = dumb
-  end
-
-  -- trace for debug and develop configurations
-  if cfg.build.id <= bld.develop.id then
-    self.trace = function(me, ...) out(...) return me end
-  else
-    self.trace = dumb
-  end
-
-  -- error and warning for all configurations
-  self.error   = function(me, ...) out('Error', ...) return me end
-  self.warning = function(me, ...) out('Warning', ...) return me end
-
-  self:trace('log:on_cfg '..cfg.build.name)
+-- configure log
+log.on_cfg = function(me, cfg)
+  enable_info = (cfg.build == 'debug')
+  enable_trace = (cfg.build == 'debug' or cfg.build == 'develop')
+  print('log.on_cfg '.. cfg.build)
 end
 
--- Increase stack depth
-function log:enter()
-  self.depth = self.depth + 1
-end
-
--- Decrease stack depth
-function log:exit()
-  self.depth = self.depth - 1
-end
-
---
-local _add_fn = function(target, id, fn)
-  target[fn] = function(me, ...)
-    if log.modules[id] then
-      log[fn](log, ...)
+-- create log module
+log.get = function(id)
+  local mod = mods[id]
+  if mod == nil then
+    local enabled = false
+    mod = {}
+    
+    if enable_info then
+      mod.info = function(...) if enabled then out(...) end return mod end
+    else
+      mod.info = function() return mod end
     end
-    return me
-  end
-end
 
--- Create log subsystem
-log._get_module = function(id)
-  local subsystem = {}
-
-  _add_fn(subsystem, id, 'info')
-  _add_fn(subsystem, id, 'trace')
-  _add_fn(subsystem, id, 'warning')
-  _add_fn(subsystem, id, 'error')
-  _add_fn(subsystem, id, 'enter')
-  _add_fn(subsystem, id, 'exit')
-
-  subsystem.enable = function()
-    log.modules[id] = true
-    return subsystem
-  end
-
-  subsystem.on_cfg = function(me, cfg)
-    log:on_cfg(cfg)
-  end
-
-  subsystem.get_module = function(id)
-    return log._get_module(id)
-  end
+    if enable_trace then
+      mod.trace = function(...) if enabled then out(...) end return mod end
+    else
+      mod.trace = function() return mod end
+    end
   
-  return subsystem
+    mod.warning = function(...) out('Warning', ...) return mod end
+    mod.error   = function(...) out('Error', ...)   return mod end
+    mod.enable  = function() enabled = true return mod end
+    mod.enter   = function() if enabled then depth = depth + 1 end end
+    mod.exit    = function() if enabled then depth = depth - 1 end end
+
+    mods[id] = mod
+  end
+  return mod
 end
 
-return log._get_module('')
+return log
