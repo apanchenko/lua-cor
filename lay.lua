@@ -7,7 +7,7 @@ local wrp = require 'src.lua-cor.wrp'
 local map = require 'src.lua-cor.map'
 local obj = require 'src.lua-cor.obj'
 local arr = require 'src.lua-cor.arr'
-local log = require('src.lua-cor.log').get('lay').enable()
+local log = require('src.lua-cor.log').get('lay')
 local widget = require 'widget'
 
 --local lay = obj:extend('spt')

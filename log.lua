@@ -9,53 +9,58 @@ local mods = {}
 local depth = 0
 
 -- raw output
-local out = function(...)
+local out = function(prefix, ...)
   if #arg == 0 then
     return
   end
-  local str = string.rep('. ', depth)
+  local str = prefix.. string.rep('. ', depth)
   for i = 1, #arg do
     str = str.. tostring(arg[i]).. ' '
   end
   print(str)
 end
 
+-- 
+local get_method = function(enable_method, id, letter, mod_enabled, mod)
+  if enable_method then
+    local pre = '['..id..'.'..letter..'] '
+    return function(...) if mod_enabled then out(pre, ...) end return mod end
+  end
+  return function() return mod end
+end
+
 -- global trace/info configuration
 local enable_info = true
 local enable_trace = true
 local log = {}
+local log_log
 
--- configure log
-log.on_cfg = function(me, cfg)
-  enable_info = (cfg.build == 'debug')
-  enable_trace = (cfg.build == 'debug' or cfg.build == 'develop')
-  print('log.on_cfg '.. cfg.build)
+-- configure log one of: 'debug', 'develop', 'release'
+log.set_configuration = function(cfg)
+  enable_info = (cfg == 'debug')
+  enable_trace = (cfg == 'debug' or cfg == 'dev')
+  log_log = log.get('log')
+  log_log.trace('set_configuration('..cfg..')', 'Info:', enable_info, 'Trace:', enable_trace)
 end
 
 -- create log module
 log.get = function(id)
   local mod = mods[id]
   if mod == nil then
-    local enabled = false
+    local enabled = true
     mod = {}
     
-    if enable_info then
-      mod.info = function(...) if enabled then out(...) end return mod end
-    else
-      mod.info = function() return mod end
-    end
+    mod.info    = get_method(enable_info,  id, 'i', enabled, mod)
+    mod.trace   = get_method(enable_trace, id, 't', enabled, mod)
+    mod.warning = get_method(true,         id, 'w', enabled, mod)
+    mod.error   = get_method(true,         id, 'e', enabled, mod)
+    mod.disable = function(   ) enabled = false return mod end
+    mod.enter   = function(   ) if enabled then depth = depth + 1 end end
+    mod.exit    = function(   ) if enabled then depth = depth - 1 end end
 
-    if enable_trace then
-      mod.trace = function(...) if enabled then out(...) end return mod end
-    else
-      mod.trace = function() return mod end
+    if log_log then
+      log_log.info('get('..id..')', 'Info:', enable_info, 'Trace:', enable_trace)
     end
-  
-    mod.warning = function(...) out('Warning', ...) return mod end
-    mod.error   = function(...) out('Error', ...)   return mod end
-    mod.enable  = function() enabled = true return mod end
-    mod.enter   = function() if enabled then depth = depth + 1 end end
-    mod.exit    = function() if enabled then depth = depth - 1 end end
 
     mods[id] = mod
   end
