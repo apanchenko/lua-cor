@@ -2,7 +2,7 @@ local arr         = require 'src.lua-cor.arr'
 local map         = require 'src.lua-cor.map'
 local obj         = require 'src.lua-cor.obj'
 local ass         = require 'src.lua-cor.ass'
-local log         = require('src.lua-cor.log').get('')
+local log         = require('src.lua-cor.log').get('lcor')
 
 -- Core dependency graph:
 -- typ bld

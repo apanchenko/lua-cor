@@ -1,7 +1,7 @@
 local ass   = require 'src.lua-cor.ass'
 local typ   = require 'src.lua-cor.typ'
 local wrp   = require 'src.lua-cor.wrp'
-local log   = require('src.lua-cor.log').get('')
+local log   = require('src.lua-cor.log').get('lcor')
 local map   = require 'src.lua-cor.map'
 local obj   = require 'src.lua-cor.obj'
 

@@ -2,7 +2,7 @@
 -- Have output functions for messages of different severity: info, trace, warning, error.
 -- Active severity is selected by cfg.build setting.
 
--- modules cache
+-- created modules
 local mods = {}
 
 -- stack depth represented as messages indentation
@@ -20,7 +20,7 @@ local out = function(prefix, ...)
   print(str)
 end
 
--- 
+-- create log method for a mod
 local get_method = function(enable_method, id, letter, mod_enabled, mod)
   if enable_method then
     local pre = '['..id..'.'..letter..'] '
@@ -44,12 +44,13 @@ log.set_configuration = function(cfg)
 end
 
 -- create log module
+-- it is convenient to use ids of same length
 log.get = function(id)
   local mod = mods[id]
   if mod == nil then
     local enabled = true
     mod = {}
-    
+
     mod.info    = get_method(enable_info,  id, 'i', enabled, mod)
     mod.trace   = get_method(enable_trace, id, 't', enabled, mod)
     mod.warning = get_method(true,         id, 'w', enabled, mod)
@@ -57,10 +58,6 @@ log.get = function(id)
     mod.disable = function(   ) enabled = false return mod end
     mod.enter   = function(   ) if enabled then depth = depth + 1 end end
     mod.exit    = function(   ) if enabled then depth = depth - 1 end end
-
-    if log_log then
-      log_log.info('get('..id..')', 'Info:', enable_info, 'Trace:', enable_trace)
-    end
 
     mods[id] = mod
   end
