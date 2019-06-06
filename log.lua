@@ -20,15 +20,6 @@ local out = function(prefix, ...)
   print(str)
 end
 
--- create log method for a mod
-local get_method = function(enable_method, id, letter, mod_enabled, mod)
-  if enable_method then
-    local pre = '['..id..'.'..letter..'] '
-    return function(...) if mod_enabled then out(pre, ...) end return mod end
-  end
-  return function() return mod end
-end
-
 -- global trace/info configuration
 local enable_info = true
 local enable_trace = true
@@ -51,10 +42,26 @@ log.get = function(id)
     local enabled = true
     mod = {}
 
-    mod.info    = get_method(enable_info,  id, 'i', enabled, mod)
-    mod.trace   = get_method(enable_trace, id, 't', enabled, mod)
-    mod.warning = get_method(true,         id, 'w', enabled, mod)
-    mod.error   = get_method(true,         id, 'e', enabled, mod)
+    if enable_info then
+      local pre = '['..id..'.i] '
+      mod.info = function(...) if enabled then out(pre, ...) end return mod end
+    else
+      mod.info = function() return mod end
+    end
+
+    if enable_trace then
+      local pre = '['..id..'.t] '
+      mod.trace = function(...) if enabled then out(pre, ...) end return mod end
+    else
+      mod.trace = function() return mod end
+    end
+
+    local pre = '['..id..'.w] '
+    mod.warning = function(...) out(pre, ...) return mod end
+
+    local pre = '['..id..'.e] '
+    mod.error = function(...) out(pre, ...) return mod end
+
     mod.disable = function(   ) enabled = false return mod end
     mod.enter   = function(   ) if enabled then depth = depth + 1 end end
     mod.exit    = function(   ) if enabled then depth = depth - 1 end end
