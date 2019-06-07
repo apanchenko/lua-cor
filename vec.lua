@@ -83,12 +83,14 @@ vec.one = vec(1, 1)
 
 -- Wrap vector functions
 function vec:wrap()
+  local is    = {'vec', typ.new_is(vec)}
+
   wrp.wrap_stc(log.info, vec, 'copy',   {'from', typ.tab}, {'to', typ.tab})
   wrp.wrap_stc(log.info, vec, 'center', {'obj', typ.tab})
   
-  wrp.wrap_tbl(log.info, vec, 'new',    {'x', typ.num}, {'y', typ.num})
-  wrp.wrap_tbl(log.info, vec, 'random', {'min', vec}, {'max', vec})
-  wrp.wrap_tbl(log.info, vec, 'from',   {'obj', typ.tab})
+  wrp.wrap_stc(log.info, vec, 'new',    is, {'x', typ.num}, {'y', typ.num})
+  wrp.wrap_stc(log.info, vec, 'random', is, {'min', vec}, {'max', vec})
+  wrp.wrap_stc(log.info, vec, 'from',   is, {'obj', typ.tab})
   
   wrp.wrap_sub(log.info, vec, 'length2')
   wrp.wrap_sub(log.info, vec, 'round')

@@ -14,12 +14,13 @@ local cnt = obj.create_lib('cnt')
 
 -- interface
 function cnt:wrap()
+  local is    = {'cnt', typ.new_is(cnt)}
   local id    = {'id', typ.any}
   local obj   = {'obj', typ.tab}
   local count = {'count', typ.num}
   local fn    = {'fn', typ.fun}
 
-  wrp.wrap_tbl(log.info, cnt, 'new')
+  wrp.wrap_stc(log.info, cnt, 'new', is)
   wrp.wrap_sub(log.info, cnt, 'is_empty')
   wrp.wrap_sub(log.info, cnt, 'push',     obj)
   wrp.wrap_sub(log.info, cnt, 'pull',     id, count)

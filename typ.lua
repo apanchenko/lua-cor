@@ -110,6 +110,15 @@ function typ.meta(mt)
   return res
 end
 
+-- Create typ
+function typ.new_is(t)
+  return typ:new('is_'..tostring(t), function(v) return typ.is(v, t) end)
+end
+-- Create typ
+function typ.new_ex(t)
+  return typ:new('ex_'..tostring(t), function(v) return typ.extends(v, t) end)
+end
+
 -- Create type that has named metatable
 function typ.metaname(name)
   local res = typ:new('typ_'..name, function(v) return typ.isname(v, name) end)

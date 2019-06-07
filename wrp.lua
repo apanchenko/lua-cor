@@ -12,7 +12,6 @@ wrp.call_table    = 2 -- class function, called on this table (or subtable) with
 wrp.call_subtable = 3 -- instance function, called on subtable with ':', default (e.g. vec:length)
 
 wrp.wrap_stc = function(flog, t, fname, ...)  wrp.fn(flog, t, fname, {...}, {call=wrp.call_static}) end
-wrp.wrap_tbl = function(flog, t, fname, ...)  wrp.fn(flog, t, fname, {...}, {call=wrp.call_table}) end
 wrp.wrap_sub = function(flog, t, fname, ...)  wrp.fn(flog, t, fname, {...}, {call=wrp.call_subtable}) end
 
 -- wrap function t.fn_name
@@ -48,6 +47,9 @@ wrp.fn = function(flog, t, fn_name, arg_infos, opts)
 
     -- second typ.child
     info.type = (function(v) -- use anonymous function to get rid of elses
+      if typ.fun(v) then
+        return typ:new('?', v)
+      end
       if typ(v) then
         return v
       end
@@ -63,8 +65,6 @@ wrp.fn = function(flog, t, fn_name, arg_infos, opts)
       error(call.. ' - invalid type declaration '.. tostring(v))
     end)(info[2])
     ass(typ(info.type))
-
-    log.info('arg '.. info.name.. ' of '.. tostring(info.type))
 
     -- third is tostring function
     info.tostring = info[3] or tostring 

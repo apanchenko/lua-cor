@@ -46,9 +46,10 @@ function obj:wrap()
   local wrp = require 'src.lua-cor.wrp'
   local typ = require 'src.lua-cor.typ'
   local ass = require 'src.lua-cor.ass'
+  local is    = {'obj', typ.new_is(obj)}
   local typename = {'typename', typ.str}
   wrp.wrap_stc(log.info, obj, 'create_lib', typename)
-  wrp.wrap_tbl(log.info, obj, 'extend',     typename)
+  wrp.wrap_stc(log.info, obj, 'extend',     is, typename)
 end
 
 -- test obj
