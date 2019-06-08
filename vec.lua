@@ -84,6 +84,8 @@ vec.one = vec(1, 1)
 -- Wrap vector functions
 function vec:wrap()
   local is    = {'vec', typ.new_is(vec)}
+  local ex    = {'exvec', typ.new_ex(vec)}
+
 
   wrp.wrap_stc(log.info, vec, 'copy',   {'from', typ.tab}, {'to', typ.tab})
   wrp.wrap_stc(log.info, vec, 'center', {'obj', typ.tab})
@@ -92,10 +94,10 @@ function vec:wrap()
   wrp.wrap_stc(log.info, vec, 'random', is, {'min', vec}, {'max', vec})
   wrp.wrap_stc(log.info, vec, 'from',   is, {'obj', typ.tab})
   
-  wrp.wrap_sub(log.info, vec, 'length2')
-  wrp.wrap_sub(log.info, vec, 'round')
-  wrp.wrap_sub(log.info, vec, 'to',     {'obj', typ.tab})
-  wrp.wrap_sub(log.info, vec, 'abs')
+  wrp.wrap_stc(log.info, vec, 'length2', ex)
+  wrp.wrap_stc(log.info, vec, 'round',   ex)
+  wrp.wrap_stc(log.info, vec, 'to',      ex, {'obj', typ.tab})
+  wrp.wrap_stc(log.info, vec, 'abs',     ex)
 end
 
 -- Self test

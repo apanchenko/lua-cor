@@ -37,9 +37,10 @@ end
 
 -- MODULE ---------------------------------------------------------------------
 function evt:wrap()
-  ass.eq(tostring(evt), 'evt')
-  wrp.wrap_sub(log.trace, evt, 'add',    {'listener', typ.tab})
-  wrp.wrap_sub(log.trace, evt, 'remove', {'listener', typ.tab})
+  local ex    = {'exevt', typ.new_ex(evt)}
+  
+  wrp.wrap_stc(log.trace, evt, 'add',    ex, {'listener', typ.tab})
+  wrp.wrap_stc(log.trace, evt, 'remove', ex, {'listener', typ.tab})
   --TODO ellipsis wrp.fn(evt, 'call', {{'name'}})
 end
 

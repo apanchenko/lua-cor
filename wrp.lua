@@ -12,7 +12,6 @@ wrp.call_table    = 2 -- class function, called on this table (or subtable) with
 wrp.call_subtable = 3 -- instance function, called on subtable with ':', default (e.g. vec:length)
 
 wrp.wrap_stc = function(flog, t, fname, ...)  wrp.fn(flog, t, fname, {...}, {call=wrp.call_static}) end
-wrp.wrap_sub = function(flog, t, fname, ...)  wrp.fn(flog, t, fname, {...}, {call=wrp.call_subtable}) end
 
 -- wrap function t.fn_name
 -- @param arg_info - array of argument descriptions {name, type, tstr}

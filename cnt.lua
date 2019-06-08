@@ -15,21 +15,22 @@ local cnt = obj.create_lib('cnt')
 -- interface
 function cnt:wrap()
   local is    = {'cnt', typ.new_is(cnt)}
+  local ex    = {'excnt', typ.new_ex(cnt)}
   local id    = {'id', typ.any}
   local obj   = {'obj', typ.tab}
   local count = {'count', typ.num}
   local fn    = {'fn', typ.fun}
 
-  wrp.wrap_stc(log.info, cnt, 'new', is)
-  wrp.wrap_sub(log.info, cnt, 'is_empty')
-  wrp.wrap_sub(log.info, cnt, 'push',     obj)
-  wrp.wrap_sub(log.info, cnt, 'pull',     id, count)
-  wrp.wrap_sub(log.info, cnt, 'remove',   id)
-  wrp.wrap_sub(log.info, cnt, 'count',    id)
-  wrp.wrap_sub(log.info, cnt, 'any',      fn)
-  wrp.wrap_sub(log.info, cnt, 'each',     fn)
-  wrp.wrap_sub(log.info, cnt, 'random')
-  wrp.wrap_sub(log.info, cnt, 'clear')
+  wrp.wrap_stc(log.info, cnt, 'new',      is)
+  wrp.wrap_stc(log.info, cnt, 'is_empty', ex)
+  wrp.wrap_stc(log.info, cnt, 'push',     ex, obj)
+  wrp.wrap_stc(log.info, cnt, 'pull',     ex, id, count)
+  wrp.wrap_stc(log.info, cnt, 'remove',   ex, id)
+  wrp.wrap_stc(log.info, cnt, 'count',    ex, id)
+  wrp.wrap_stc(log.info, cnt, 'any',      ex, fn)
+  wrp.wrap_stc(log.info, cnt, 'each',     ex, fn)
+  wrp.wrap_stc(log.info, cnt, 'random',   ex)
+  wrp.wrap_stc(log.info, cnt, 'clear',    ex)
 end
 
 -- Create cnt instance
