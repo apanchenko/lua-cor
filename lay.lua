@@ -21,14 +21,14 @@ function lay:wrap()
   local pos    = {'pos', typ.tab}
   local space  = {'space', typ.num}
 
-  wrp.wrap_stc(log.info, lay, 'insert',       group,   obj, param)
-  wrp.wrap_stc(log.info, lay, 'to',           obj,     pos, param)
-  wrp.wrap_stc(log.info, lay, 'new_image',    group,   param)
-  wrp.wrap_stc(log.info, lay, 'new_text',     group,   param)
-  wrp.wrap_stc(log.info, lay, 'new_sheet',    group,   param)
-  wrp.wrap_stc(log.info, lay, 'new_button',   group,   param)
-  wrp.wrap_stc(log.info, lay, 'column',       obj,     space)
-  wrp.wrap_stc(log.info, lay, 'rows',         obj,     param)
+  wrp.fn(log.info, lay, 'insert',       group,   obj, param)
+  wrp.fn(log.info, lay, 'to',           obj,     pos, param)
+  wrp.fn(log.info, lay, 'new_image',    group,   param)
+  wrp.fn(log.info, lay, 'new_text',     group,   param)
+  wrp.fn(log.info, lay, 'new_sheet',    group,   param)
+  wrp.fn(log.info, lay, 'new_button',   group,   param)
+  wrp.fn(log.info, lay, 'column',       obj,     space)
+  wrp.fn(log.info, lay, 'rows',         obj,     param)
 end
 
 local cmp_z = function(a, b)

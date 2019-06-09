@@ -21,16 +21,16 @@ function cnt:wrap()
   local count = {'count', typ.num}
   local fn    = {'fn', typ.fun}
 
-  wrp.wrap_stc(log.info, cnt, 'new',      is)
-  wrp.wrap_stc(log.info, cnt, 'is_empty', ex)
-  wrp.wrap_stc(log.info, cnt, 'push',     ex, obj)
-  wrp.wrap_stc(log.info, cnt, 'pull',     ex, id, count)
-  wrp.wrap_stc(log.info, cnt, 'remove',   ex, id)
-  wrp.wrap_stc(log.info, cnt, 'count',    ex, id)
-  wrp.wrap_stc(log.info, cnt, 'any',      ex, fn)
-  wrp.wrap_stc(log.info, cnt, 'each',     ex, fn)
-  wrp.wrap_stc(log.info, cnt, 'random',   ex)
-  wrp.wrap_stc(log.info, cnt, 'clear',    ex)
+  wrp.fn(log.info, cnt, 'new',      is)
+  wrp.fn(log.info, cnt, 'is_empty', ex)
+  wrp.fn(log.info, cnt, 'push',     ex, obj)
+  wrp.fn(log.info, cnt, 'pull',     ex, id, count)
+  wrp.fn(log.info, cnt, 'remove',   ex, id)
+  wrp.fn(log.info, cnt, 'count',    ex, id)
+  wrp.fn(log.info, cnt, 'any',      ex, fn)
+  wrp.fn(log.info, cnt, 'each',     ex, fn)
+  wrp.fn(log.info, cnt, 'random',   ex)
+  wrp.fn(log.info, cnt, 'clear',    ex)
 end
 
 -- Create cnt instance

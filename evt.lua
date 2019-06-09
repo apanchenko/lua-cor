@@ -39,8 +39,8 @@ end
 function evt:wrap()
   local ex    = {'exevt', typ.new_ex(evt)}
   
-  wrp.wrap_stc(log.trace, evt, 'add',    ex, {'listener', typ.tab})
-  wrp.wrap_stc(log.trace, evt, 'remove', ex, {'listener', typ.tab})
+  wrp.fn(log.trace, evt, 'add',    ex, {'listener', typ.tab})
+  wrp.fn(log.trace, evt, 'remove', ex, {'listener', typ.tab})
   --TODO ellipsis wrp.fn(evt, 'call', {{'name'}})
 end
 

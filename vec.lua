@@ -87,17 +87,17 @@ function vec:wrap()
   local ex    = {'exvec', typ.new_ex(vec)}
 
 
-  wrp.wrap_stc(log.info, vec, 'copy',   {'from', typ.tab}, {'to', typ.tab})
-  wrp.wrap_stc(log.info, vec, 'center', {'obj', typ.tab})
+  wrp.fn(log.info, vec, 'copy',   {'from', typ.tab}, {'to', typ.tab})
+  wrp.fn(log.info, vec, 'center', {'obj', typ.tab})
   
-  wrp.wrap_stc(log.info, vec, 'new',    is, {'x', typ.num}, {'y', typ.num})
-  wrp.wrap_stc(log.info, vec, 'random', is, {'min', vec}, {'max', vec})
-  wrp.wrap_stc(log.info, vec, 'from',   is, {'obj', typ.tab})
+  wrp.fn(log.info, vec, 'new',    is, {'x', typ.num}, {'y', typ.num})
+  wrp.fn(log.info, vec, 'random', is, {'min', vec}, {'max', vec})
+  wrp.fn(log.info, vec, 'from',   is, {'obj', typ.tab})
   
-  wrp.wrap_stc(log.info, vec, 'length2', ex)
-  wrp.wrap_stc(log.info, vec, 'round',   ex)
-  wrp.wrap_stc(log.info, vec, 'to',      ex, {'obj', typ.tab})
-  wrp.wrap_stc(log.info, vec, 'abs',     ex)
+  wrp.fn(log.info, vec, 'length2', ex)
+  wrp.fn(log.info, vec, 'round',   ex)
+  wrp.fn(log.info, vec, 'to',      ex, {'obj', typ.tab})
+  wrp.fn(log.info, vec, 'abs',     ex)
 end
 
 -- Self test

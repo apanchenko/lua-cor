@@ -1,8 +1,6 @@
 local ass = require 'src.lua-cor.ass'
 local typ = require 'src.lua-cor.typ'
-local wrp = require 'src.lua-cor.wrp'
 local arr = require 'src.lua-cor.arr'
-local log = require('src.lua-cor.log').get('map')
 
 -- name to value
 local map = setmetatable({}, {__tostring=function() return 'map' end})
@@ -122,7 +120,7 @@ end
 -- call member function if it exists
 function map.call_fn(t, name, ...)
   local fn = t[name]
-  if typ.fun(fn) then
+  if fn then
     fn(...)
   end
 end
@@ -161,12 +159,15 @@ function map.add(receiver, ...)
 end
 
 -- MODULE ---------------------------------------------------------------------
-function map:wrap()
-  wrp.wrap_stc(log.info, map, 'all',    {'t', typ.tab}, {'fn', typ.fun})
-  wrp.wrap_stc(log.info, map, 'each',   {'t', typ.tab}, {'fn', typ.fun})
-  wrp.wrap_stc(log.info, map, 'select', {'t', typ.tab}, {'pred', typ.fun})
-  wrp.wrap_stc(log.info, map, 'count',  {'t', typ.tab})
-  wrp.wrap_stc(log.info, map, 'random', {'t', typ.tab})
+function map:wrap(core)
+  local wrp = core:get('wrp')
+  local log = require('src.lua-cor.log').get('map')
+
+  wrp.fn(log.info, map, 'all',    {'t', typ.tab}, {'fn', typ.fun})
+  wrp.fn(log.info, map, 'each',   {'t', typ.tab}, {'fn', typ.fun})
+  wrp.fn(log.info, map, 'select', {'t', typ.tab}, {'pred', typ.fun})
+  wrp.fn(log.info, map, 'count',  {'t', typ.tab})
+  wrp.fn(log.info, map, 'random', {'t', typ.tab})
 end
 
 --
