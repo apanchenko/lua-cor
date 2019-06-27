@@ -8,11 +8,24 @@ local evt = obj:extend('evt')
 
 -- 
 function evt:new()
-  return obj.new(self, {list = {}})
+  local this = obj.new(self, {list = {}})
+
+  -- register listerner
+  this.add = function(com)
+    this:listen(com)
+    com.com_add(
+    {
+      com_destroy = function()
+        this:remove(com)
+      end
+    })
+  end
+
+  return this
 end
 
 -- add listener
-function evt:add(listener)
+function evt:listen(listener)
   table.insert(self.list, listener)
 end
 
@@ -39,7 +52,7 @@ end
 function evt:wrap()
   local ex    = {'exevt', typ.new_ex(evt)}
   
-  wrp.fn(log.trace, evt, 'add',    ex, {'listener', typ.tab})
+  wrp.fn(log.trace, evt, 'listen', ex, {'listener', typ.tab})
   wrp.fn(log.trace, evt, 'remove', ex, {'listener', typ.tab})
   --TODO ellipsis wrp.fn(evt, 'call', {{'name'}})
 end

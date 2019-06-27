@@ -7,7 +7,7 @@ local wrp = require 'src.lua-cor.wrp'
 local map = require 'src.lua-cor.map'
 local obj = require 'src.lua-cor.obj'
 local arr = require 'src.lua-cor.arr'
-local log = require('src.lua-cor.log').get('lay')
+local log = require('src.lua-cor.log').get(' lay')
 local widget = require 'widget'
 
 --local lay = obj:extend('spt')
@@ -135,6 +135,7 @@ lay.new_image = function(group, param)
   else
     h = w / (param.ratio or 1)
   end
+  log.trace('lay.new_image', param.path)
   local img = display.newImageRect(param.path, w, h)
   lay.insert(group, img, param)
   return img
@@ -276,6 +277,7 @@ function lay.new_layout()
       ass.str(id)
       local p = params[id]
       local o = layers[p.z]
+      log.trace('group.show', id, 'on z', p.z)
       if o then
         o:removeSelf()
       end
@@ -288,6 +290,7 @@ function lay.new_layout()
     group.hide = function(id)
       local p = params[id]
       local o = layers[p.z]
+      log.trace('group.hide', id, 'on z', p.z)
       if o then
         o:removeSelf()
         layers[p.z] = nil
@@ -309,6 +312,10 @@ function lay.new_layout()
       log.trace('----------walk_tree {', group._id)
       _.walk_tree(0, group)
       log.trace('--------------------}')
+    end
+
+    group.com_destroy = function()
+      map.each(layers, function(o) o:removeSelf() end)
     end
 
     return group
