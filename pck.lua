@@ -29,16 +29,35 @@ end
 
 -- load module to package
 function pkg:load(...)
-  self.names = arr(...)
-  log.info(self.path..':load('..tostring(self.names)..')')
+  local names = arr(...)
+  log.info(self.path..':load('..tostring(names)..')')
   log.enter()
-  self.names:each(function(name)
+  names:each(function(name)
     log.info(name)
+    ass.nul(self.modules[name], 'module '.. name.. ' already loaded')
     local fullname = self.path.. '.'.. name
     local mod = require(fullname)
     ass(mod, 'failed found module '.. fullname)
-    ass.nul(self.modules[name], 'module '.. name.. ' already loaded')
     self.modules[name] = mod
+    self.names:push(name)
+  end)
+  log.exit()
+  return self
+end
+
+-- load module to package
+function pkg:packs(...)
+  local names = arr(...)
+  log.info(self.path.. ':packs('.. tostring(names).. ')')
+  log.enter()
+  names:each(function(name)
+    log.info(name)
+    ass.nul(self.modules[name], 'module '.. name.. ' already loaded')
+    local fullname = self.path.. '.'.. name.. '._pack'
+    local mod = require(fullname)
+    ass(mod, 'failed found module '.. fullname)
+    self.modules[name] = mod
+    self.names:push(name)
   end)
   log.exit()
   return self
@@ -54,7 +73,7 @@ pkg.find = pkg.get
 
 -- wrap modules
 function pkg:wrap()
-  local core = require 'src.lua-cor.package'
+  local core = require 'src.lua-cor._pack'
   -- cannot wrap the wrapper so do logging manually
   log.trace(self.path..':wrap() '.. tostring(self.names))
   log.enter()
@@ -67,6 +86,7 @@ function pkg:wrap()
     end
   end)
   log.exit()
+  return self
 end
 
 -- get random module
@@ -88,6 +108,7 @@ function pkg:test()
       log.exit()
     end
   end)
+  return self
 end
 
 -- module

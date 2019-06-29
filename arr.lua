@@ -43,6 +43,13 @@ function arr:length()           return #self end
 -- Add v at the end
 function arr:push(v)            self[#self + 1] = v end
 
+-- Add elements from another array
+function arr:pusha(a)
+  for i = 1, #a do
+    self:push(a[i])
+  end
+end
+
 -- Remove and return last element
 function arr:pop()              return table.remove(self) end
 
