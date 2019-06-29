@@ -18,8 +18,7 @@ obj.__index     = obj
 
 -- Create new type extending obj
 obj.extend = function(self, typename)
-  local sub = setmetatable({}, self)
-  sub[tname] = typename
+  local sub = setmetatable({[tname] = typename}, self)
   sub.__index = sub
   sub.__tostring = function(self) return self[tname] end
   return sub

@@ -5,7 +5,7 @@ local ass = require('src.lua-cor.ass')
 local log = require('src.lua-cor.log').get('lcor')
 
 -- Core dependency graph:
--- typ bld
+-- typ
 -- ass
 -- log
 -- wrp lay

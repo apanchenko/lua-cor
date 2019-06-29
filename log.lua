@@ -1,6 +1,6 @@
 -- Log system.
 -- Have output functions for messages of different severity: info, trace, warning, error.
--- Active severity is selected by cfg.build setting.
+-- Active severity by set_debug, set_dev or set_release.
 
 -- created modules
 local mods = {}
