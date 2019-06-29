@@ -30,7 +30,7 @@ local log_log
 log.set_configuration = function(cfg)
   enable_info = (cfg == 'debug')
   enable_trace = (cfg == 'debug' or cfg == 'dev')
-  log_log = log.get('log')
+  log_log = log.get(' log')
   log_log.trace('set_configuration('..cfg..')', 'Info:', enable_info, 'Trace:', enable_trace)
 end
 
