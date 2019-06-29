@@ -1,31 +1,27 @@
---[[
-    Inheritance implementation. The obj is a base type to extend.
-    Call 'extend' to inherit new type and 'new' to create instance of a type.
+-- Inheritance implementation. The obj is a base type to extend.
+-- Call 'extend' to inherit new type and 'new' to create instance of a type.
+--
+-- While there is no semantic difference between type and instance in Lua
+-- and so it is not a problem to inherit any table, classic OOP does not
+-- defines this. Should we prohibit extending instances?
 
-    While there is no semantic difference between type and instance in Lua
-    and so it is not a problem to inherit any table, classic OOP does not
-    defines this. Should we prohibit extending instances?
-]]--
 
 local log = require('src.lua-cor.log').get('lcor')
 
--- Create obj
-local mt        = {__tostring = function(self) return self.tname end}
-local obj       = setmetatable({tname = 'obj'}, mt)
-obj.__index     = obj
+-- private members
+local tname = {}
 
--- Create library table for static functions
-obj.create_lib = function(typename)
-  local lib = setmetatable({tname = typename}, mt)
-  lib.__index = lib 
-  return lib
-end 
+-- Create obj
+local mt        = {__tostring = function(self) return self[tname] end}
+local obj       = setmetatable({[tname] = 'obj'}, mt)
+obj.__index     = obj
 
 -- Create new type extending obj
 obj.extend = function(self, typename)
-  local sub = setmetatable({tname = typename}, self)
+  local sub = setmetatable({}, self)
+  sub[tname] = typename
   sub.__index = sub
-  sub.__tostring = function(self) return self.tname end
+  sub.__tostring = function(self) return self[tname] end
   return sub
 end
 
@@ -36,20 +32,18 @@ obj.new = function(self, inst) return setmetatable(inst or {}, self) end
 obj.__call = function(t, ...) return t:new(...) end
 
 -- Support tostring for ancestors
-obj.__tostring  = function(self) return self.tname end
+obj.__tostring  = function(self) return self[tname] end
 
 -- Typename getter
-obj.get_typename = function(self) return self.tname end
+obj.get_typename = function(self) return self[tname] end
 
 -- Wrap obj functions with logs and checks 
 function obj:wrap()
   local wrp = require 'src.lua-cor.wrp'
   local typ = require 'src.lua-cor.typ'
-  local ass = require 'src.lua-cor.ass'
   local is    = {'obj', typ.new_is(obj)}
   local typename = {'typename', typ.str}
-  wrp.fn(log.info, obj, 'create_lib', typename)
-  wrp.fn(log.info, obj, 'extend',     is, typename)
+  wrp.fn(log.info, obj, 'extend', is, typename)
 end
 
 -- test obj
