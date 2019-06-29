@@ -26,12 +26,28 @@ local enable_trace = true
 local log = {}
 local log_log
 
--- configure log one of: 'debug', 'develop', 'release'
-log.set_configuration = function(cfg)
-  enable_info = (cfg == 'debug')
-  enable_trace = (cfg == 'debug' or cfg == 'dev')
+-- set debug configuration
+log.set_debug = function(cfg)
+  enable_info = true
+  enable_trace = true
   log_log = log.get(' log')
-  log_log.trace('set_configuration('..cfg..')', 'Info:', enable_info, 'Trace:', enable_trace)
+  log_log.trace('set_debug')
+end
+
+-- set development configuration
+log.set_dev = function(cfg)
+  enable_info = false
+  enable_trace = true
+  log_log = log.get(' log')
+  log_log.trace('set_dev')
+end
+
+-- set release configuration
+log.set_release = function(cfg)
+  enable_info = false
+  enable_trace = false
+  log_log = log.get(' log')
+  log_log.trace('set_release')
 end
 
 -- create log module

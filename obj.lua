@@ -7,7 +7,7 @@
     defines this. Should we prohibit extending instances?
 ]]--
 
-local log = require('src.lua-cor.log').get('obj')
+local log = require('src.lua-cor.log').get('lcor')
 
 -- Create obj
 local mt        = {__tostring = function(self) return self.tname end}

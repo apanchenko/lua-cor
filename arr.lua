@@ -2,7 +2,7 @@
 -- As you remember, indeces in Lua arrays start with 1.
 -- Thanks to Marcus Irven
 
-local log = require('src.lua-cor.log').get('arr')
+local log = require('src.lua-cor.log').get('lcor')
 
 local mfloor  = math.floor
 local mrandom = math.random

@@ -32,7 +32,7 @@ end
 
 -- load module to package
 function pck:load(...)
-  log.info(self[path]..':load('..tostring(arg)..')')
+  log.info(self[path]..':load('..arr.join(arg)..')')
   log.enter()
   arr.each(arg, function(name)
     log.info(name)
@@ -49,7 +49,7 @@ end
 
 -- load module to package
 function pck:packs(...)
-  log.info(self[path].. ':packs('.. tostring(arg).. ')')
+  log.info(self[path].. ':packs('.. arr.join(arg).. ')')
   log.enter()
   arr.each(arg, function(name)
     log.info(name)
