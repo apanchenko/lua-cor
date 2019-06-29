@@ -16,6 +16,7 @@ arr.__index = arr
 
 -- Create instance
 mt.__call = function(t, ...)    return setmetatable({...}, t) end
+arr.new   = function(...)       return setmetatable({...}, arr) end
 
 -- Convert to string
 arr.__tostring = function(t, sep) return arr.join(t, sep) end
