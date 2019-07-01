@@ -79,8 +79,10 @@ function pck:wrap()
   self[names]:each(function(name)
     local mod = self[mods][name]
     if mod.wrap then
-      log.trace(name..':wrap(core)')
+      log.trace(name..':wrap(core)'.. tostring(mod.wrap))
+      log.enter()
       mod:wrap(core)
+      log.exit()
     end
   end)
   log.exit()

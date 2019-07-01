@@ -304,7 +304,7 @@ end
 function arr:wrap(core)
   local typ = core:get('typ')
   local wrp = core:get('wrp')
-  local t   = {'t', typ.tab}
+  local t   = {'t', typ.tab, function(t) return '['..tostring(t)..']' end}
   local v   = {'v', typ.any}
   local f   = {'f', typ.fun}
   local n   = {'n', typ.nat}

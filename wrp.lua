@@ -6,6 +6,10 @@ local map = require('src.lua-cor.map')
 
 local wrp = {}
 
+-- private
+-- wrapped funciton names
+local _wrapped = {}
+
 -- Wrap function t.fn_name
 --   flog     - log function
 --   t        - table with function fn
@@ -58,6 +62,15 @@ wrp.fn = function(flog, t, fn_name, ...)
   local fn = t[fn_name]
   local call = tstr..'.'..fn_name
   ass.fun(fn, call..' - no such function')
+
+  -- check function is not wrapped yet
+  local wrapped = rawget(t, _wrapped)
+  if wrapped == nil then
+    wrapped = {}
+    rawset(t, _wrapped, wrapped)
+  end
+  ass.nul(wrapped[fn_name], 'function '..tstr..'.'..fn_name..' is already wrapped')
+  wrapped[fn_name] = true
 
   -- define a new function
   t[fn_name] = function(...)
