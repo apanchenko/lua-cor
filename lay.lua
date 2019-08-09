@@ -5,7 +5,6 @@ local ass = require 'src.lua-cor.ass'
 local typ = require 'src.lua-cor.typ'
 local wrp = require 'src.lua-cor.wrp'
 local map = require 'src.lua-cor.map'
-local obj = require 'src.lua-cor.obj'
 local arr = require 'src.lua-cor.arr'
 local log = require('src.lua-cor.log').get(' lay')
 local widget = require 'widget'
@@ -210,7 +209,7 @@ lay.new_button = function(group, param)
     if param.vh then
       param.height = cfg.view.vh * param.vh
     else
-      param.height = w / (param.ratio or 1)
+      param.height = param.width / (param.ratio or 1)
     end
   end
 

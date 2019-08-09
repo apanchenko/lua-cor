@@ -44,16 +44,4 @@ function ass.ge(a, b, msg)  return a >= b or error(msg or tostring(a).. ' > ' ..
 -- Compare tostring representation
 function ass.ts(a, b, msg)  return tostring(a)==tostring(b) or error(msg or tostring(a)..' not '..tostring(b)) end
 
--- Test asserts
-function ass:test()
-  ass(true)
-  ass.nul(x)
-  ass.num(8.8)
-  ass.nat(9)
-  ass.tab({})
-  ass.str("String")
-  ass.bool(false)
-  ass.fun(function() end)
-end
-
 return ass

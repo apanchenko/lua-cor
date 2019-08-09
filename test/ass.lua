@@ -1,0 +1,10 @@
+local ass = require('src.lua-cor.ass')
+
+ass(true)
+ass.nul(nil)
+ass.num(8.8)
+ass.nat(9)
+ass.tab({})
+ass.str("String")
+ass.bool(false)
+ass.fun(function() end)

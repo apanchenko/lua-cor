@@ -3,6 +3,7 @@ local map = require('src.lua-cor.map')
 local obj = require('src.lua-cor.obj')
 local ass = require('src.lua-cor.ass')
 local log = require('src.lua-cor.log').get('lcor')
+local typ = require('src.lua-cor.typ')
 
 -- Core dependency graph:
 -- typ
@@ -78,7 +79,7 @@ function pck:wrap()
   -- for all modules
   self[names]:each(function(name)
     local mod = self[mods][name]
-    if mod.wrap then
+    if typ.tab(mod) and mod.wrap then
       log.trace(name..':wrap(core)'.. tostring(mod.wrap))
       log.enter()
       mod:wrap(core)
@@ -101,10 +102,13 @@ end
 function pck:test()
   self[names]:each(function(name)
     local mod = self[mods][name]
-    if mod.test then
-      log.trace(name..':test(ass)')
-      log.enter()
-      mod:test(ass)
+    if typ.extends(mod, pck) then
+      log.trace(name..':test()').enter()
+      mod:test()
+      log.exit()
+    else
+      log.trace('test '..name).enter()
+      require(self[path]..'.test.'..name)
       log.exit()
     end
   end)

@@ -1,4 +1,3 @@
-local ass   = require 'src.lua-cor.ass'
 local typ   = require 'src.lua-cor.typ'
 
 local mt = {}
@@ -17,7 +16,7 @@ function mt.__newindex(self, key, value)
 
     -- notify new citizen about existing ones
     if typ.tab(value) then
-      cb = value['on_'..k]
+      local cb = value['on_'..k]
       if cb then
         cb(value, v)
       end
@@ -30,26 +29,6 @@ end
 
 function mt:__tostring()
   return 'env'
-end
-
--- self test
-function mt:test()
-  -- create local test environment
-  local env = setmetatable({}, mt)
-
-  -- check type safety
-  --ass(typ.metaname('env')(env))
-  --ass(typ.meta(mt)(env))
-  ass.is(env, mt)
-
-  -- sideeffect of changing environment
-  local side = 1 
-  -- b listens c
-  env.a = {on_b = function(self, b) side = b end}
-  -- set c with sideeffect
-  env.b = 9
-  -- observe sideeffect
-  ass.eq(side, 9)
 end
 
 -- create clean environment
