@@ -1,4 +1,3 @@
-local ass = require 'src.lua-cor.ass'
 local typ = require 'src.lua-cor.typ'
 local arr = require 'src.lua-cor.arr'
 
@@ -155,7 +154,7 @@ function map.add(receiver, ...)
     map.each(arg, function(v, k)
       receiver[k] = v
     end)
-  end)  
+  end)
 end
 
 -- MODULE ---------------------------------------------------------------------
