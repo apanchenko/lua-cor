@@ -94,7 +94,7 @@ wrp.fn = function(flog, t, fn_name, ...)
     fn_indent.enter()
       map.call_fn(fn_name..'_wrap_before', ...) -- check state before call
       local result = fn(...)
-      map.call_fn(fn_name..'_wrap_after', ...) -- check self state and result after call
+      map.call_fn(fn_name..'_wrap_after', ..., result) -- check self state and result after call
     fn_indent.exit()
 
     -- log function output

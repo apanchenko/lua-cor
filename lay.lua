@@ -28,6 +28,7 @@ function lay:wrap()
   wrp.fn(log.info, lay, 'new_button',   group,   param)
   wrp.fn(log.info, lay, 'column',       obj,     space)
   wrp.fn(log.info, lay, 'rows',         obj,     param)
+  wrp.fn(log.info, lay, 'new_layout')
 end
 
 local cmp_z = function(a, b)
@@ -256,6 +257,9 @@ end
 -- Layout represents a reusable visual design of UI element:
 --   .add         add parameterised childs
 --   .new_group   create view with this layout
+function lay.new_layout_wrap_before()
+  ass.eq(3,4)
+end
 function lay.new_layout()
   local layout = {} -- interface .add, .new_group
   local params = {} -- layout id:param container
@@ -321,6 +325,13 @@ function lay.new_layout()
   end
 
   return layout
+end
+
+lay.new_layout_wrap_after = function(layout)
+  ass(layout)
+  ass.fun(layout.add)
+  ass.fun(layout.new_group)
+  ass(false)
 end
 
 return lay

@@ -32,7 +32,7 @@ function pck:new(pack_path)
 end
 
 -- load module to package
-function pck:load(...)
+function pck:modules(...)
   local indent = log.info(self[path]..':load('..arr.join(arg)..')')
   indent.enter()
   arr.each(arg, function(name)

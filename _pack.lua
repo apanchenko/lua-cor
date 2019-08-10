@@ -1,6 +1,6 @@
 return require('src.lua-cor.pck')
   :new('src.lua-cor')
-  :load(
+  :modules(
     'arr',
     'ass',
     'cnt',
