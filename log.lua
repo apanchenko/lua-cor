@@ -58,29 +58,31 @@ log.get = function(id)
     local enabled = true
     mod = {}
 
+    local indent = {}
+    indent.enter = function() if enabled then depth = depth + 1 end end
+    indent.exit  = function() if enabled then depth = depth - 1 end end
+
+    local skip = {}
+    skip.enter = function() end
+    skip.exit  = function() end
+
     if enable_info then
-      local pre = '['..id..'.i] '
-      mod.info = function(...) if enabled then out(pre, ...) end return mod end
+      local pre_i = '['..id..'.i] '
+      mod.info = function(...) if enabled then out(pre_i, ...) end return indent end
     else
-      mod.info = function() return mod end
+      mod.info = function() return skip end
     end
 
     if enable_trace then
-      local pre = '['..id..'.t] '
-      mod.trace = function(...) if enabled then out(pre, ...) end return mod end
+      local pre_t = '['..id..'.t] '
+      mod.trace = function(...) if enabled then out(pre_t, ...) end return indent  end
     else
-      mod.trace = function() return mod end
+      mod.trace = function() return skip end
     end
 
-    local pre = '['..id..'.w] '
-    mod.warning = function(...) out(pre, ...) return mod end
-
-    local pre = '['..id..'.e] '
-    mod.error = function(...) out(pre, ...) return mod end
-
+    mod.warning = function(...) out('['..id..'.w] ', ...) end
+    mod.error   = function(...) out('['..id..'.e] ', ...) end
     mod.disable = function(   ) enabled = false return mod end
-    mod.enter   = function(   ) if enabled then depth = depth + 1 end end
-    mod.exit    = function(   ) if enabled then depth = depth - 1 end end
 
     mods[id] = mod
   end

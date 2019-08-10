@@ -33,8 +33,8 @@ end
 
 -- load module to package
 function pck:load(...)
-  log.info(self[path]..':load('..arr.join(arg)..')')
-  log.enter()
+  local indent = log.info(self[path]..':load('..arr.join(arg)..')')
+  indent.enter()
   arr.each(arg, function(name)
     log.info(name)
     ass.nul(self[mods][name], 'module '.. name.. ' already loaded')
@@ -44,14 +44,14 @@ function pck:load(...)
     self[mods][name] = mod
     self[names]:push(name)
   end)
-  log.exit()
+  indent.exit()
   return self
 end
 
 -- load module to package
 function pck:packs(...)
-  log.info(self[path].. ':packs('.. arr.join(arg).. ')')
-  log.enter()
+  local indent = log.info(self[path].. ':packs('.. arr.join(arg).. ')')
+  indent.enter()
   arr.each(arg, function(name)
     log.info(name)
     ass.nul(self[mods][name], 'module '.. name.. ' already loaded')
@@ -61,7 +61,7 @@ function pck:packs(...)
     self[mods][name] = mod
     self[names]:push(name)
   end)
-  log.exit()
+  indent.exit()
   return self
 end
 
@@ -74,19 +74,19 @@ end
 function pck:wrap()
   local core = require 'src.lua-cor._pack'
   -- cannot wrap the wrapper so do logging manually
-  log.trace(self[path]..':wrap() '.. tostring(self[names]))
-  log.enter()
+  local indent = log.trace(self[path]..':wrap() '.. tostring(self[names]))
+  indent.enter()
   -- for all modules
   self[names]:each(function(name)
     local mod = self[mods][name]
     if typ.tab(mod) and mod.wrap then
-      log.trace(name..':wrap(core)'.. tostring(mod.wrap))
-      log.enter()
-      mod:wrap(core)
-      log.exit()
+      local indent_mod = log.trace(name..':wrap()'.. tostring(mod.wrap))
+      indent_mod.enter()
+        mod:wrap(core)
+      indent_mod.exit()
     end
   end)
-  log.exit()
+  indent.exit()
   return self
 end
 
@@ -103,13 +103,15 @@ function pck:test()
   self[names]:each(function(name)
     local mod = self[mods][name]
     if typ.extends(mod, pck) then
-      log.trace(name..':test()').enter()
+      local indent = log.trace(name..':test()')
+      indent.enter()
       mod:test()
-      log.exit()
+      indent.exit()
     else
-      log.trace('test '..name).enter()
+      local indent = log.trace('test '..name)
+      indent.enter()
       require(self[path]..'.test.'..name)
-      log.exit()
+      indent.exit()
     end
   end)
   return self

@@ -245,10 +245,10 @@ end
 
 -- log layout tree
 _.walk_tree = function(index, obj)
-  log.trace(index, obj._id, '[', obj.x, obj.y, obj.width, obj.height, ']', obj.numChildren)
-  log.enter()
+  local indent = log.trace(index, obj._id, '[', obj.x, obj.y, obj.width, obj.height, ']', obj.numChildren)
+  indent.enter()
   _.each_child(obj, _.walk_tree)
-  log.exit()
+  indent.exit()
 end
 
 

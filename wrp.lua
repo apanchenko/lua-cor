@@ -17,7 +17,8 @@ local _wrapped = {}
 wrp.fn = function(flog, t, fn_name, ...)
   local tstr = tostring(t)
   local call = 'wrp.fn('..tostring(tstr)..', '..tostring(fn_name)..')'
-  log.info(call).enter()
+  local indent = log.info(call)
+  indent.enter()
   ass.fun(flog)
   ass.tab(t, 'first arg is not a table in '.. call)
   ass.str(tstr, 't name is not string in '.. call)
@@ -79,26 +80,22 @@ wrp.fn = function(flog, t, fn_name, ...)
     ass.eq(#arg_infos, #arg, call..' expected '..#arg_infos..' arguments, found '..#arg..' - ['..arr.join(arg)..']')
     local arguments = ''
     for i = 1, #arg do
-      local arg = arg[i]
+      local a = arg[i]
       local info = arg_infos[i]
-      local argstr = info.tostring(arg)
-      ass(info.type(arg), call..' '..info.name..'='..argstr..' is not of '.. tostring(info.type))
+      local astr = info.tostring(a)
+      ass(info.type(a), call..' '..info.name..'='..astr..' is not of '.. tostring(info.type))
       if #arguments > 0 then
         arguments = arguments..', '
       end
-      arguments = arguments.. info.name.. '='.. argstr
+      arguments = arguments.. info.name.. '='.. astr
     end
-    flog(call..'('..arguments..')').enter()
 
-    -- check state before call
-    map.call_fn(fn_name..'_wrap_before', ...)
-
-    local result = fn(...)
-
-    -- check self state and result after call
-    map.call_fn(fn_name..'_wrap_after', ...)
-    
-    flog().exit()
+    local fn_indent = flog(call..'('..arguments..')')
+    fn_indent.enter()
+      map.call_fn(fn_name..'_wrap_before', ...) -- check state before call
+      local result = fn(...)
+      map.call_fn(fn_name..'_wrap_after', ...) -- check self state and result after call
+    fn_indent.exit()
 
     -- log function output
     if result then
@@ -107,7 +104,7 @@ wrp.fn = function(flog, t, fn_name, ...)
     return result
   end
 
-  log.exit()
+  indent.exit()
 end
 
 return wrp
