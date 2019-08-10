@@ -110,7 +110,7 @@ function pck:test()
     else
       local indent = log.trace('test '..name)
       indent.enter()
-      require(self[path]..'.test.'..name)
+      require(self[path]..'.test.'..name) -- run module test
       indent.exit()
     end
   end)
