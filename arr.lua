@@ -254,6 +254,9 @@ end
 
 -- Return random element
 function arr:random()
+  if #self == 0 then
+    return nil
+  end
   return self[mrandom(#self)]
 end
 

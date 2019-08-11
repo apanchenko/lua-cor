@@ -17,16 +17,17 @@ function cnt:wrap()
   local is    = {'cnt', typ.new_is(cnt)}
   local ex    = {'excnt', typ.new_ex(cnt)}
   local id    = {'id', typ.any}
-  local obj   = {'obj', typ.tab}
+  local tab   = {'obj', typ.tab}
   local count = {'count', typ.num}
   local fn    = {'fn', typ.fun}
 
   wrp.fn(log.info, cnt, 'new',      is)
   wrp.fn(log.info, cnt, 'is_empty', ex)
-  wrp.fn(log.info, cnt, 'push',     ex, obj)
+  wrp.fn(log.info, cnt, 'push',     ex, tab)
   wrp.fn(log.info, cnt, 'pull',     ex, id, count)
   wrp.fn(log.info, cnt, 'remove',   ex, id)
   wrp.fn(log.info, cnt, 'count',    ex, id)
+  wrp.fn(log.info, cnt, 'keys',     ex)
   wrp.fn(log.info, cnt, 'any',      ex, fn)
   wrp.fn(log.info, cnt, 'each',     ex, fn)
   wrp.fn(log.info, cnt, 'random',   ex)
@@ -111,6 +112,11 @@ function cnt:count(id)
   return my.count or 1
 end
 
+--
+function cnt:keys()
+  return map.keys(self[data])
+end
+
 -- all are true
 function cnt:all(fn)
   return map.all(self[data], fn)
@@ -129,6 +135,11 @@ end
 --
 function cnt:random()
   return map.random(self[data])
+end
+
+--
+function cnt:max(fn)
+  return map.max(self[data], fn)
 end
 
 --

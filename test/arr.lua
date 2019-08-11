@@ -86,6 +86,9 @@ ass.ts(arr({}, {1, {2, {3, 4}}}):flatten(), '1, 2, 3, 4')
 -- random
 local r = b:random()
 ass(r==3 or r==6 or r==9)
+
+ass.nul(arr():random())
+
 c = b:random_sample(2)
 ass.eq(c:length(), 2)
 ass((c:include(3) and c:include(6)) or

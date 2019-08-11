@@ -19,6 +19,9 @@ res = i:push({id='b', count=3, copy=copy})
 ass.eq(res, 5)
 log.trace('cnttest - '.. tostring(i))
 
+-- assert i contains keys 'a' and 'b'
+ass.ts(i:keys(), 'a, b')
+
 local b = i:pull('b', 4)
 ass.eq(b.count, 4)
 ass.eq(i:count('b'), 1)

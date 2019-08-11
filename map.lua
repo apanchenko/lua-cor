@@ -76,12 +76,12 @@ function map.map(t, fn)
   return mapped
 end
 
--- reduce map to single value
-function map.reduce(t, memo, fn)
+-- reduce map to single value fn(mem, v, k)
+function map.reduce(t, mem, fn)
   for k, v in pairs(t) do
-    memo = fn(memo, v, k)
+    mem = fn(mem, v, k)
   end
-  return memo
+  return mem
 end
 
 -- find key by value
@@ -157,6 +157,20 @@ function map.add(receiver, ...)
   end)
 end
 
+-- maximum element of t by fn(v,k)->number
+function map.max(t, fn)
+  local mem = {item=nil, eval=nil}
+  map.reduce(t, mem, function(mem, v)
+    local eval = fn(v)
+    if mem.eval == nil or mem.eval < eval then
+      mem.eval = eval
+      mem.item = v
+    end
+    return mem
+  end)
+  return mem.item
+end
+
 -- MODULE ---------------------------------------------------------------------
 function map:wrap(core)
   local wrp = core:get('wrp')
@@ -165,6 +179,7 @@ function map:wrap(core)
   wrp.fn(log.info, map, 'each',   {'t', typ.tab}, {'fn', typ.fun})
   wrp.fn(log.info, map, 'select', {'t', typ.tab}, {'pred', typ.fun})
   wrp.fn(log.info, map, 'count',  {'t', typ.tab})
+  wrp.fn(log.info, map, 'keys',   {'t', typ.tab})
   wrp.fn(log.info, map, 'random', {'t', typ.tab})
 end
 
