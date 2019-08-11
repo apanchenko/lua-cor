@@ -75,6 +75,19 @@ function vec:abs()
   return vec:new(math.abs(self.x), math.abs(self.y))
 end
 
+-- Call fn for each integer in grid [0, vec-1]
+function vec:iterate_grid_wrap_before(fn)
+  ass.nat(self.x)
+  ass.nat(self.y)
+end
+function vec:iterate_grid(fn)
+  for x = 0, self.x - 1 do
+    for y = 0, self.y - 1 do
+      fn(vec(x, y))
+    end
+  end
+end
+
 -- Constant zero vector
 vec.zero = vec(0, 0)
 
@@ -89,15 +102,16 @@ function vec:wrap()
 
   wrp.fn(log.info, vec, 'copy',   {'from', typ.tab}, {'to', typ.tab})
   wrp.fn(log.info, vec, 'center', {'obj', typ.tab})
-  
+
   wrp.fn(log.info, vec, 'new',    is, {'x', typ.num}, {'y', typ.num})
   wrp.fn(log.info, vec, 'random', is, {'min', vec}, {'max', vec})
   wrp.fn(log.info, vec, 'from',   is, {'obj', typ.tab})
-  
+
   wrp.fn(log.info, vec, 'length2', ex)
   wrp.fn(log.info, vec, 'round',   ex)
   wrp.fn(log.info, vec, 'to',      ex, {'obj', typ.tab})
   wrp.fn(log.info, vec, 'abs',     ex)
+  wrp.fn(log.info, vec, 'iterate_grid', ex, {'fn', typ.fun})
 end
 
 return vec
