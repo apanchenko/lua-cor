@@ -88,6 +88,19 @@ function vec:iterate_grid(fn)
   end
 end
 
+-- Calculate 1D array index of this position in 2D grid
+function vec:to_index(grid_size)
+  ass.nat(self.x)
+  ass.nat(self.y)
+  ass.nat(grid_size.x)
+  ass.nat(grid_size.y)
+  ass.gt(grid_size.x, self.x)
+  ass.gt(grid_size.y, self.y)
+end
+function vec:to_index(grid_size)
+  return self.x * grid_size.y + self.y;
+end
+
 -- Constant zero vector
 vec.zero = vec(0, 0)
 
@@ -112,6 +125,7 @@ function vec:wrap()
   wrp.fn(log.info, vec, 'to',      ex, {'obj', typ.tab})
   wrp.fn(log.info, vec, 'abs',     ex)
   wrp.fn(log.info, vec, 'iterate_grid', ex, {'fn', typ.fun})
+  wrp.fn(log.info, vec, 'to_index', ex, {'grid_size', vec})
 end
 
 return vec

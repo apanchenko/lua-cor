@@ -14,3 +14,5 @@ assert(vec(2.3, 4.5):round().x == 2)
 
 local d = vec(-1.5, -0.5)
 ass(d:abs().x == 1.5)
+
+ass.eq(vec(3,4):to_index(vec(10,10)), 34)
