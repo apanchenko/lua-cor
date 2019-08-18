@@ -110,6 +110,31 @@ function vec:random_in_grid()
   return vec(math.random(0, self.x - 1), math.random(0, self.y - 1))
 end
 
+-- Iterate neightbourhood on grid, wrapping
+function vec:each_neighbour_wrap_before(grid_size, fn)
+  ass.nat(self.x)
+  ass.nat(self.y)
+  ass.nat(grid_size.x)
+  ass.nat(grid_size.y)
+  ass.gt(grid_size.x, self.x)
+  ass.gt(grid_size.y, self.y)
+end
+local function module(v, mod)
+  if v < 0    then return v + mod end
+  if v >= mod then return v - mod end
+  return v
+end
+function vec:each_neighbour_in_grid(grid_size, fn)
+  --fn(vec(module(self.x - 1, grid_size.x), module(self.y - 1, grid_size.y)))
+  fn(vec(module(self.x    , grid_size.x), module(self.y - 1, grid_size.y)))
+  --fn(vec(module(self.x + 1, grid_size.x), module(self.y - 1, grid_size.y)))
+  fn(vec(module(self.x + 1, grid_size.x), module(self.y    , grid_size.y)))
+  --fn(vec(module(self.x + 1, grid_size.x), module(self.y + 1, grid_size.y)))
+  fn(vec(module(self.x    , grid_size.x), module(self.y + 1, grid_size.y)))
+  --fn(vec(module(self.x - 1, grid_size.x), module(self.y + 1, grid_size.y)))
+  fn(vec(module(self.x - 1, grid_size.x), module(self.y    , grid_size.y)))
+end
+
 -- Constant zero vector
 vec.zero = vec(0, 0)
 
@@ -136,6 +161,7 @@ function vec:wrap()
   wrp.fn(log.info, vec, 'iterate_grid', ex, {'fn', typ.fun})
   wrp.fn(log.info, vec, 'to_index_in_grid', ex, {'grid_size', vec})
   wrp.fn(log.info, vec, 'random_in_grid', ex)
+  wrp.fn(log.info, vec, 'each_neighbour_in_grid', ex, {'grid_size', vec}, {'fn', typ.fun})
 end
 
 return vec
