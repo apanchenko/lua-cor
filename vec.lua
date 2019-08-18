@@ -89,7 +89,7 @@ function vec:iterate_grid(fn)
 end
 
 -- Calculate 1D array index of this position in 2D grid
-function vec:to_index(grid_size)
+function vec:to_index_in_grid_wrap_before(grid_size)
   ass.nat(self.x)
   ass.nat(self.y)
   ass.nat(grid_size.x)
@@ -97,8 +97,17 @@ function vec:to_index(grid_size)
   ass.gt(grid_size.x, self.x)
   ass.gt(grid_size.y, self.y)
 end
-function vec:to_index(grid_size)
+function vec:to_index_in_grid(grid_size)
   return self.x * grid_size.y + self.y;
+end
+
+-- Random integer in grid [0, vec-1]
+function vec:random_in_grid_wrap_before()
+  ass.nat(self.x)
+  ass.nat(self.y)
+end
+function vec:random_in_grid()
+  return vec(math.random(0, self.x - 1), math.random(0, self.y - 1))
 end
 
 -- Constant zero vector
@@ -118,14 +127,15 @@ function vec:wrap()
 
   wrp.fn(log.info, vec, 'new',    is, {'x', typ.num}, {'y', typ.num})
   wrp.fn(log.info, vec, 'random', is, {'min', vec}, {'max', vec})
-  wrp.fn(log.info, vec, 'from',   is, {'obj', typ.tab})
+  wrp.fn(log.info, vec, 'from',    is, {'obj', typ.tab})
 
   wrp.fn(log.info, vec, 'length2', ex)
   wrp.fn(log.info, vec, 'round',   ex)
   wrp.fn(log.info, vec, 'to',      ex, {'obj', typ.tab})
   wrp.fn(log.info, vec, 'abs',     ex)
   wrp.fn(log.info, vec, 'iterate_grid', ex, {'fn', typ.fun})
-  wrp.fn(log.info, vec, 'to_index', ex, {'grid_size', vec})
+  wrp.fn(log.info, vec, 'to_index_in_grid', ex, {'grid_size', vec})
+  wrp.fn(log.info, vec, 'random_in_grid', ex)
 end
 
 return vec

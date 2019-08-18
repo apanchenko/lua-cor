@@ -51,7 +51,12 @@ function map.count(t)
   return count
 end
 
--- random element of table
+-- t has no elements
+function map.is_empty(t)
+  return map.count(t) == 0
+end
+
+  -- random element of table
 function map.random(t)
   local count = map.count(t)
   if count == 0 then
@@ -175,12 +180,13 @@ end
 function map:wrap(core)
   local wrp = core:get('wrp')
   local log = require('src.lua-cor.log').get('lcor')
-  wrp.fn(log.info, map, 'all',    {'t', typ.tab}, {'fn', typ.fun})
-  wrp.fn(log.info, map, 'each',   {'t', typ.tab}, {'fn', typ.fun})
-  wrp.fn(log.info, map, 'select', {'t', typ.tab}, {'pred', typ.fun})
-  wrp.fn(log.info, map, 'count',  {'t', typ.tab})
-  wrp.fn(log.info, map, 'keys',   {'t', typ.tab})
-  wrp.fn(log.info, map, 'random', {'t', typ.tab})
+  wrp.fn(log.info, map, 'all',      {'t', typ.tab}, {'fn', typ.fun})
+  wrp.fn(log.info, map, 'each',     {'t', typ.tab}, {'fn', typ.fun})
+  wrp.fn(log.info, map, 'select',   {'t', typ.tab}, {'pred', typ.fun})
+  wrp.fn(log.info, map, 'count',    {'t', typ.tab})
+  wrp.fn(log.info, map, 'is_empty', {'t', typ.tab})
+  wrp.fn(log.info, map, 'keys',     {'t', typ.tab})
+  wrp.fn(log.info, map, 'random',   {'t', typ.tab})
 end
 
 return map

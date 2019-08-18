@@ -6,6 +6,12 @@ local t = { week='semana', month='mes', year='ano' }
 ass(map.any(t, function(v) return #v > 3 end))
 ass(map.all(t, function(v) return #v > 2 end))
 ass.eq(map.count(t), 3)
+
+-- emptyness
+ass(map.is_empty({}))
+ass(not map.is_empty({a=1}))
+
+-- keys
 ass.eq(map.key(t, 'mes'), 'month')
 --ass.eq(map.tostring(map.merge({a=1, b=2}, {b=3, c=4})), '{a=1, b=3, c=4}')
 --ass.eq(map.tostring(t), '{week=semana, month=mes, year=ano}')
