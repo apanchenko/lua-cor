@@ -50,6 +50,16 @@ function arr:pusha(a)
   end
 end
 
+-- Remove element
+function arr:remove(v)
+  for i = 1, #self do
+    if self[i] == v then
+      table.remove(self, i)
+      break
+    end
+  end
+end
+
 -- Remove and return last element
 function arr:pop()              return table.remove(self) end
 
@@ -155,6 +165,10 @@ end
 function arr:invoke(fn_name, ...)
   local args = {...}
   arr.each(self, function(x) x[fn_name](unpack(args)) end)
+end
+function arr:invoke_self(fn_name, ...)
+  local args = {...}
+  arr.each(self, function(x) x[fn_name](x, unpack(args)) end)
 end
 
 -- Create array of members by name of all elements of t

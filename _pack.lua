@@ -3,6 +3,7 @@ return require('src.lua-cor.pck')
   :modules(
     'arr',
     'ass',
+    'bro',
     'cnt',
     'com',
     'cor',

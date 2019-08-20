@@ -3,25 +3,26 @@ local log = require('src.lua-cor.log').get('lcor')
 local typ = require 'src.lua-cor.typ'
 local obj = require 'src.lua-cor.obj'
 local wrp = require 'src.lua-cor.wrp'
+local arr = require 'src.lua-cor.arr'
 
 local evt = obj:extend('evt')
 
 -- 
 function evt:new()
-  local this = obj.new(self, {list = {}})
+  self = obj.new(self, {list = {}})
 
   -- register listerner
-  this.add = function(com)
-    this:listen(com)
+  self.add = function(com)
+    self:listen(com)
     com.com_add(
     {
       com_destroy = function()
-        this:remove(com)
+        self:remove(com)
       end
     })
   end
 
-  return this
+  return self
 end
 
 -- add listener
