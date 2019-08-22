@@ -115,8 +115,7 @@ function map.invoke(t, fn_name, ...)
 end
 
 -- Call member function by name on all elements of t
--- TODO: rename each_call_colon
-function map.invoke_colon(t, fn_name, ...)
+function map.invoke_self(t, fn_name, ...)
   local args = {...}
   map.each(t, function(x) x[fn_name](x, unpack(args)) end)
 end

@@ -1,40 +1,42 @@
 local obj = require 'src.lua-cor.obj'
 local arr = require 'src.lua-cor.arr'
 
-local bro = obj:extend('bro')
+local broadcast = obj:extend('broadcast')
 
 -- private
 local _list = {}
 local _name = {}
 
 --
-function bro:new(name)
+function broadcast:new(name)
   self = obj.new(self)
   self[_name] = name
   self[_list] = arr()
   return self
 end
 
--- add listener
-function bro:add(listener)
-  self[_list]:push(listener)
+-- add or remove listener
+function broadcast:listen(listener, subscribe)
+  if subscribe then
+    self[_list]:push(listener)
+  else
+    self[_list]:remove(listener)
+  end
 end
 
--- remove listener
-function bro:remove(listener)
-  self[_list]:remove(listener)
-end
-
-function bro:__call(...)
+--
+function broadcast:__call(...)
   self[_list]:invoke_self(self[_name], ...)
 end
 
 -- MODULE ---------------------------------------------------------------------
-function bro:wrap()
-  local ass = require 'src.lua-cor.ass'
+function broadcast:wrap()
   local log = require('src.lua-cor.log').get('lcor')
   local typ = require 'src.lua-cor.typ'
   local wrp = require 'src.lua-cor.wrp'
+
+  wrp.fn(log.info, broadcast, 'new', {'broadcast', typ.new_is(broadcast)}, {'name', typ.str})
+  wrp.fn(log.info, broadcast, 'listen', {'broadcast', typ.new_ex(broadcast)}, {'listener', typ.tab}, {'subscrive', typ.boo})
 end
 
-return bro
+return broadcast

@@ -6,7 +6,6 @@ return require('src.lua-cor.pck')
     'bro',
     'cnt',
     'com',
-    'cor',
     'env',
     'evt',
     'lay',
