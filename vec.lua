@@ -2,10 +2,10 @@
     Vector of two elements. Extremely useful for 2D math.
 ]]--
 
-local obj   = require 'src.lua-cor.obj'
-local typ   = require 'src.lua-cor.typ'
+local obj   = require('src.lua-cor.obj')
+local typ   = require('src.lua-cor.typ')
 local ass   = require 'src.lua-cor.ass'
-local wrp   = require 'src.lua-cor.wrp'
+local wrp   = require('src.lua-cor.wrp')
 local log = require('src.lua-cor.log').get('obj')
 
 -- Define 2d vector type

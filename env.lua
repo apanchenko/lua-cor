@@ -1,4 +1,4 @@
-local typ   = require 'src.lua-cor.typ'
+local typ   = require('src.lua-cor.typ')
 
 local mt = {}
 mt.__index = mt

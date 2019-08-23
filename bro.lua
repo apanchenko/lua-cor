@@ -1,4 +1,4 @@
-local obj = require 'src.lua-cor.obj'
+local obj = require('src.lua-cor.obj')
 local arr = require 'src.lua-cor.arr'
 
 local broadcast = obj:extend('broadcast')
@@ -32,8 +32,8 @@ end
 -- MODULE ---------------------------------------------------------------------
 function broadcast:wrap()
   local log = require('src.lua-cor.log').get('lcor')
-  local typ = require 'src.lua-cor.typ'
-  local wrp = require 'src.lua-cor.wrp'
+  local typ = require('src.lua-cor.typ')
+  local wrp = require('src.lua-cor.wrp')
 
   wrp.fn(log.info, broadcast, 'new', typ.new_is(broadcast), typ.str)
   wrp.fn(log.info, broadcast, 'listen', typ.new_ex(broadcast), typ.tab, typ.boo)

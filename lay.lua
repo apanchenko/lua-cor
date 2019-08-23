@@ -2,8 +2,8 @@
 
 local cfg = require 'src.cfg'
 local ass = require 'src.lua-cor.ass'
-local typ = require 'src.lua-cor.typ'
-local wrp = require 'src.lua-cor.wrp'
+local typ = require('src.lua-cor.typ')
+local wrp = require('src.lua-cor.wrp')
 local map = require 'src.lua-cor.map'
 local arr = require 'src.lua-cor.arr'
 local log = require('src.lua-cor.log').get(' lay')

@@ -1,4 +1,4 @@
-local typ = require 'src.lua-cor.typ'
+local typ = require('src.lua-cor.typ')
 local arr = require 'src.lua-cor.arr'
 
 -- name to value
