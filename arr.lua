@@ -321,10 +321,10 @@ end
 function arr:wrap(core)
   local typ = core:get('typ')
   local wrp = core:get('wrp')
-  local t   = {'t', typ.tab, function(t) return '['..tostring(t)..']' end}
-  local v   = {'v', typ.any}
-  local f   = {'f', typ.fun}
-  local n   = {'n', typ.nat}
+  local t   = typ.tab
+  local v   = typ.any
+  local f   = typ.fun
+  local n   = typ.nat
 
   --wrp.fn(log.info, arr, 'join',           t, {'sep', typ.str})
   wrp.fn(log.info, arr, 'is_empty',       t)
@@ -336,7 +336,7 @@ function arr:wrap(core)
   wrp.fn(log.info, arr, 'clear',          t)
   wrp.fn(log.info, arr, 'each',           t, f)
   wrp.fn(log.info, arr, 'map',            t, f)
-  wrp.fn(log.info, arr, 'reduce',         t, {'memo', typ.any}, f)
+  wrp.fn(log.info, arr, 'reduce',         t, typ.any, f)
   wrp.fn(log.info, arr, 'detect',         t, f)
   wrp.fn(log.info, arr, 'select',         t, f)
   wrp.fn(log.info, arr, 'reject',         t, f)
@@ -344,7 +344,7 @@ function arr:wrap(core)
   wrp.fn(log.info, arr, 'any',            t, f)
   wrp.fn(log.info, arr, 'include',        t, v)
   --invoke
-  wrp.fn(log.info, arr, 'pluck',          t, {'name', typ.str})
+  wrp.fn(log.info, arr, 'pluck',          t, typ.str)
   wrp.fn(log.info, arr, 'min',            t, f)
   wrp.fn(log.info, arr, 'max',            t, f)
   wrp.fn(log.info, arr, 'reverse',        t)
@@ -355,7 +355,7 @@ function arr:wrap(core)
   wrp.fn(log.info, arr, 'random',         t)
   wrp.fn(log.info, arr, 'random_sample',  t, n)
   wrp.fn(log.info, arr, 'remove_random',  t)
-  wrp.fn(log.info, arr, 'find_index',     t, {'low', typ.nat}, {'high', typ.nat}, {'obj', typ.any}, {'is_lower', typ.fun})
+  wrp.fn(log.info, arr, 'find_index',     t, typ.nat, typ.nat, typ.any, typ.fun)
 end
 
 return arr

@@ -14,12 +14,12 @@ local cnt = obj:extend('cnt')
 
 -- interface
 function cnt:wrap()
-  local is    = {'cnt', typ.new_is(cnt)}
-  local ex    = {'excnt', typ.new_ex(cnt)}
-  local id    = {'id', typ.any}
-  local tab   = {'obj', typ.tab}
-  local count = {'count', typ.num}
-  local fn    = {'fn', typ.fun}
+  local is    = typ.new_is(cnt)
+  local ex    = typ.new_ex(cnt)
+  local id    = typ.any
+  local tab   = typ.tab
+  local count = typ.num
+  local fn    = typ.fun
 
   wrp.fn(log.info, cnt, 'new',      is)
   wrp.fn(log.info, cnt, 'is_empty', ex)

@@ -14,11 +14,11 @@ local lay = setmetatable({}, { __tostring = function() return 'lay' end})
 
 -- Wrap functions to add checks and logs
 function lay:wrap()
-  local group =  {'group', typ.tab}
-  local obj    = {'object', typ.tab}
-  local param  = {'param', typ.tab, map.tostring}
-  local pos    = {'pos', typ.tab}
-  local space  = {'space', typ.num}
+  local group =  typ.tab
+  local obj    = typ.tab
+  local param  = typ.tab
+  local pos    = typ.tab
+  local space  = typ.num
 
   wrp.fn(log.info, lay, 'insert',       group,   obj, param)
   wrp.fn(log.info, lay, 'to',           obj,     pos, param)

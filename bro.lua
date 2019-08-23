@@ -35,8 +35,8 @@ function broadcast:wrap()
   local typ = require 'src.lua-cor.typ'
   local wrp = require 'src.lua-cor.wrp'
 
-  wrp.fn(log.info, broadcast, 'new', {'broadcast', typ.new_is(broadcast)}, {'name', typ.str})
-  wrp.fn(log.info, broadcast, 'listen', {'broadcast', typ.new_ex(broadcast)}, {'listener', typ.tab}, {'subscrive', typ.boo})
+  wrp.fn(log.info, broadcast, 'new', typ.new_is(broadcast), typ.str)
+  wrp.fn(log.info, broadcast, 'listen', typ.new_ex(broadcast), typ.tab, typ.boo)
 end
 
 return broadcast

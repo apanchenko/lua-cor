@@ -24,40 +24,21 @@ wrp.fn = function(flog, t, fn_name, ...)
   ass.str(tstr, 't name is not string in '.. call)
   ass.str(fn_name, 'fn_name is not a string in '.. call)
 
-  -- prepare arg_infos array
-  local arg_infos = {...}
-  for i = 1, #arg_infos do
-    local info = arg_infos[i]
-
-    -- first is name of the argument
-    info.name = info[1]
-    ass.str(info.name)
-
-    -- second typ.child
-    info.type = (function(v) -- use anonymous function to get rid of elses
-      if typ.fun(v) then
-        return typ:new('?', v)
-      end
-      if typ(v) then
-        return v
-      end
-      if typ.str(v) then
-        return typ.metaname(v)
-      end
-      if typ.tab(v) then
-        return typ.meta(v)
-      end
-      if v == nil then
-        return typ.metaname(info.name)
-      end
-      error(call.. ' - invalid type declaration '.. tostring(v))
-    end)(info[2])
-    ass(typ(info.type))
-
-    -- third is tostring function
-    info.tostring = info[3] or tostring 
-    ass.fun(info.tostring)
-  end
+  local arg_typs = arr.map({...}, function(v)
+    if typ.fun(v) then
+      return typ:new('?', v)
+    end
+    if typ(v) then
+      return v
+    end
+    if typ.str(v) then
+      return typ.metaname(v)
+    end
+    if typ.tab(v) then
+      return typ.new_is(v)
+    end
+    error(call.. ' - invalid type declaration '.. tostring(v))
+  end)
 
     -- original function
   local fn = t[fn_name]
@@ -77,17 +58,17 @@ wrp.fn = function(flog, t, fn_name, ...)
   t[fn_name] = function(...)
     -- ceck arguments
     local arg = {...}
-    ass.eq(#arg_infos, #arg, call..' expected '..#arg_infos..' arguments, found '..#arg..' - ['..arr.join(arg)..']')
+    ass.eq(#arg_typs, #arg, call..' expected '..#arg_typs..' arguments, found '..#arg..' - ['..arr.join(arg)..']')
     local arguments = ''
     for i = 1, #arg do
       local a = arg[i]
-      local info = arg_infos[i]
-      local astr = info.tostring(a)
-      ass(info.type(a), call..' '..info.name..'='..astr..' is not of '.. tostring(info.type))
+      local atyp = arg_typs[i]
+      local astr = atyp.tostr(a)
+      ass(atyp(a), call..' '..astr..' is not of '.. tostring(atyp))
       if #arguments > 0 then
         arguments = arguments..', '
       end
-      arguments = arguments.. info.name.. '='.. astr
+      arguments = arguments..astr
     end
 
     local fn_indent = flog(call..'('..arguments..')')

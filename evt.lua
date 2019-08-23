@@ -1,9 +1,7 @@
-local ass = require 'src.lua-cor.ass'
+local ass = require('src.lua-cor.ass')
 local log = require('src.lua-cor.log').get('lcor')
-local typ = require 'src.lua-cor.typ'
-local obj = require 'src.lua-cor.obj'
-local wrp = require 'src.lua-cor.wrp'
-local arr = require 'src.lua-cor.arr'
+local typ = require('src.lua-cor.typ')
+local obj = require('src.lua-cor.obj')
 
 local evt = obj:extend('evt')
 
@@ -51,10 +49,11 @@ end
 
 -- MODULE ---------------------------------------------------------------------
 function evt:wrap()
-  local ex    = {'exevt', typ.new_ex(evt)}
-  
-  wrp.fn(log.trace, evt, 'listen', ex, {'listener', typ.tab})
-  wrp.fn(log.trace, evt, 'remove', ex, {'listener', typ.tab})
+  local wrp = require('src.lua-cor.wrp')
+  local ex = typ.new_ex(evt)
+
+  wrp.fn(log.trace, evt, 'listen', ex, typ.tab)
+  wrp.fn(log.trace, evt, 'remove', ex, typ.tab)
   --TODO ellipsis wrp.fn(evt, 'call', {{'name'}})
 end
 

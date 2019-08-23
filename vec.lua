@@ -143,25 +143,24 @@ vec.one = vec(1, 1)
 
 -- Wrap vector functions
 function vec:wrap()
-  local is    = {'vec', typ.new_is(vec)}
-  local ex    = {'exvec', typ.new_ex(vec)}
+  local is    = typ.new_is(vec)
+  local ex    = typ.new_ex(vec)
 
+  wrp.fn(log.info, vec, 'copy',   typ.tab, typ.tab)
+  wrp.fn(log.info, vec, 'center', typ.tab)
 
-  wrp.fn(log.info, vec, 'copy',   {'from', typ.tab}, {'to', typ.tab})
-  wrp.fn(log.info, vec, 'center', {'obj', typ.tab})
-
-  wrp.fn(log.info, vec, 'new',    is, {'x', typ.num}, {'y', typ.num})
-  wrp.fn(log.info, vec, 'random', is, {'min', vec}, {'max', vec})
-  wrp.fn(log.info, vec, 'from',    is, {'obj', typ.tab})
+  wrp.fn(log.info, vec, 'new',    is, typ.num, typ.num)
+  wrp.fn(log.info, vec, 'random', is, vec, vec)
+  wrp.fn(log.info, vec, 'from',    is, typ.tab)
 
   wrp.fn(log.info, vec, 'length2', ex)
   wrp.fn(log.info, vec, 'round',   ex)
-  wrp.fn(log.info, vec, 'to',      ex, {'obj', typ.tab})
+  wrp.fn(log.info, vec, 'to',      ex, typ.tab)
   wrp.fn(log.info, vec, 'abs',     ex)
-  wrp.fn(log.info, vec, 'iterate_grid', ex, {'fn', typ.fun})
-  wrp.fn(log.info, vec, 'to_index_in_grid', ex, {'grid_size', vec})
+  wrp.fn(log.info, vec, 'iterate_grid', ex, typ.fun)
+  wrp.fn(log.info, vec, 'to_index_in_grid', ex, vec)
   wrp.fn(log.info, vec, 'random_in_grid', ex)
-  wrp.fn(log.info, vec, 'each_neighbour_in_grid', ex, {'grid_size', vec}, {'fn', typ.fun})
+  wrp.fn(log.info, vec, 'each_neighbour_in_grid', ex, vec, typ.fun)
 end
 
 return vec

@@ -26,6 +26,7 @@ end
 
 -- Create typ
 local typ = setmetatable({}, mt)
+typ.__index = typ
 
 -- Check if 't' extends 'mt'
 function typ.extends(t, mt)
@@ -73,32 +74,26 @@ function typ:new(name, check)
     return
   end
   -- save name and check for typ instance
-  return setmetatable({name=name, check=check}, self)
+  return setmetatable({name=name, check=check, tostr=tostring}, self)
 end
 
 function typ:__tostring() return self.name end
 function typ:__call(v) return self.check(v) end
 
--- tab or smth
---function tab.__add(l, r)
---  local name = tostring(l)..'|'..tostring(r),
---  local is = function(v) return l(v) or r(v) end
---  return make_type(name, is)
---end
-
--- Get checker function type(v)
-local get_istype = function(typename)
-  return function(v) return type(v) == typename end
+function typ:add_tostr(fn)
+  local t = typ:new(self.name, self.check)
+  t.tostr = fn
+  return t
 end
 
 -- Simple types
-typ.any = typ:new('typ.any', function(v) return v ~= nil end, typ)
-typ.boo = typ:new('typ.boo', get_istype('boolean'))
-typ.tab = typ:new('typ.tab', get_istype('table'))
-typ.num = typ:new('typ.num', get_istype('number'))
-typ.str = typ:new('typ.str', get_istype('string'))
-typ.fun = typ:new('typ.fun', get_istype('function'))
-typ.nat = typ:new('typ.nat', function(v) return type(v) == 'number' and v >= 0 and math.floor(v) == v end, typ)
+typ.any = typ:new('typ.any', function(v) return v ~= nil end)
+typ.boo = typ:new('typ.boo', function(v) return type(v) == 'boolean' end)
+typ.tab = typ:new('typ.tab', function(v) return type(v) == 'table' end)
+typ.num = typ:new('typ.num', function(v) return type(v) == 'number' end)
+typ.str = typ:new('typ.str', function(v) return type(v) == 'string' end)
+typ.fun = typ:new('typ.fun', function(v) return type(v) == 'function' end)
+typ.nat = typ:new('typ.nat', function(v) return type(v) == 'number' and v >= 0 and math.floor(v) == v end)
 
 -- Create type that has metatable mt
 function typ.meta(mt)
