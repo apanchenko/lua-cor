@@ -25,9 +25,6 @@ wrp.fn = function(flog, t, fn_name, ...)
   ass.str(fn_name, 'fn_name is not a string in '.. call)
 
   local arg_typs = arr.map({...}, function(v)
---    if typ.fun(v) then
---      return typ:new('?', v)
---    end
     if typ(v) then
       return v
     end
