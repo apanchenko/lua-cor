@@ -40,8 +40,7 @@ obj.get_typename = function(self) return self[tname] end
 function obj:wrap()
   local wrp = require('src.lua-cor.wrp')
   local typ = require('src.lua-cor.typ')
-  local is    = typ.new_is(obj)
-  wrp.fn(log.info, obj, 'extend', is, typ.str)
+  wrp.fn(log.info, obj, 'extend', obj, typ.str)
 end
 
 return obj

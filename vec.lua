@@ -143,15 +143,14 @@ vec.one = vec(1, 1)
 
 -- Wrap vector functions
 function vec:wrap()
-  local is    = typ.new_is(vec)
   local ex    = typ.new_ex(vec)
 
   wrp.fn(log.info, vec, 'copy',   typ.tab, typ.tab)
   wrp.fn(log.info, vec, 'center', typ.tab)
 
-  wrp.fn(log.info, vec, 'new',    is, typ.num, typ.num)
-  wrp.fn(log.info, vec, 'random', is, vec, vec)
-  wrp.fn(log.info, vec, 'from',    is, typ.tab)
+  wrp.fn(log.info, vec, 'new',    vec, typ.num, typ.num)
+  wrp.fn(log.info, vec, 'random', vec, vec, vec)
+  wrp.fn(log.info, vec, 'from',   vec, typ.tab)
 
   wrp.fn(log.info, vec, 'length2', ex)
   wrp.fn(log.info, vec, 'round',   ex)

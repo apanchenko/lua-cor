@@ -14,14 +14,13 @@ local cnt = obj:extend('cnt')
 
 -- interface
 function cnt:wrap()
-  local is    = typ.new_is(cnt)
   local ex    = typ.new_ex(cnt)
   local id    = typ.any
   local tab   = typ.tab
   local count = typ.num
   local fn    = typ.fun
 
-  wrp.fn(log.info, cnt, 'new',      is)
+  wrp.fn(log.info, cnt, 'new',      cnt)
   wrp.fn(log.info, cnt, 'is_empty', ex)
   wrp.fn(log.info, cnt, 'push',     ex, tab)
   wrp.fn(log.info, cnt, 'pull',     ex, id, count)
