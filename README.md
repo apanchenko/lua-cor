@@ -11,7 +11,6 @@ Contains common code I found useful and shareable:
 - ass - assert library
 - bro - broadcast event to subscribers
 - cnt - container for countable objects
-- env - container for singleton objects, simple depency injection among them
 - lay - layout 2D display objects for UI
 - log - logging system with log severity and stack depth indentation
 - map - map key to value, which is Lua table
