@@ -13,7 +13,7 @@ local typ = require('src.lua-cor.typ')
 -- arr
 -- map
 -- obj
--- env evt pck vec
+-- env pck vec
 
 local pck = obj:extend('pck')
 

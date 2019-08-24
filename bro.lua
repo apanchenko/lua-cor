@@ -1,5 +1,6 @@
 local obj = require('src.lua-cor.obj')
-local arr = require 'src.lua-cor.arr'
+local arr = require('src.lua-cor.arr')
+local ass = require('src.lua-cor.ass')
 
 local broadcast = obj:extend('broadcast')
 
@@ -16,6 +17,9 @@ function broadcast:new(name)
 end
 
 -- add or remove listener
+function broadcast:listen_wrap_before(listener, subscribe)
+  ass.fun(listener[self[_name]], 'Broadcast listener has no function '..self[_name])
+end
 function broadcast:listen(listener, subscribe)
   if subscribe then
     self[_list]:push(listener)
