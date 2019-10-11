@@ -108,8 +108,7 @@ function map.keys(t)
 end
 
 -- Call member function by name on all elements of t
--- TODO: rename each_call
-function map.invoke(t, fn_name, ...)
+function map.each_call(t, fn_name, ...)
   local args = {...}
   map.each(t, function(x) x[fn_name](unpack(args)) end)
 end
