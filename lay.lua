@@ -279,6 +279,7 @@ function lay.new_layout()
     group.show = function(id)
       ass.str(id)
       local p = params[id]
+      ass(p, 'group.show ['..id..'] not found')
       local o = layers[p.z]
       log.trace('group.show', id, 'on z', p.z)
       if o then

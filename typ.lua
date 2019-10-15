@@ -63,7 +63,7 @@ function mt:__call(v)
 end
 
 -- Describe type by name and checking function
-function typ:new(name, check)
+function typ:new(name, check, tostr)
   -- validate arguments
   if self ~= typ then
     error('typ:new - self is not typ')
@@ -74,7 +74,7 @@ function typ:new(name, check)
     return
   end
   -- save name and check for typ instance
-  return setmetatable({name=name, check=check, tostr=tostring}, self)
+  return setmetatable({name=name, check=check, tostr=tostr or tostring}, self)
 end
 
 function typ:__tostring() return self.name end
