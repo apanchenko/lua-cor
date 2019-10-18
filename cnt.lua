@@ -56,10 +56,8 @@ end
 -- Add object to container
 -- @param obj   - object to add
 -- @return      - resulting number of objects in container
-function cnt:push_wrap_before(obj)
-  ass(obj.id)
-end
 function cnt:push(obj)
+  ass(obj.id)
   local my = self[data][obj.id] -- exisitng object in container
   if my then
     if obj.count then -- if countable

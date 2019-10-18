@@ -17,10 +17,8 @@ function broadcast:new(name)
 end
 
 -- add or remove listener
-function broadcast:listen_wrap_before(listener, subscribe)
-  ass.fun(listener[self[_name]], 'Broadcast listener has no function '..self[_name])
-end
 function broadcast:listen(listener, subscribe)
+  ass.fun(listener[self[_name]], 'Broadcast listener has no function '..self[_name])
   if subscribe then
     self[_list]:push(listener)
   else
