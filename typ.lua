@@ -113,6 +113,7 @@ end
 function typ.new_ex(t)
   return typ:new('ex_'..tostring(t), function(v) return typ.extends(v, t) end)
 end
+typ.ext = typ.new_ex
 
 -- Create type that has named metatable
 function typ.metaname(name)
