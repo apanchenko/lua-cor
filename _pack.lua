@@ -1,4 +1,4 @@
-return require('src.lua-cor.pck')
+return require('src.lua-cor.pack')
   :new('src.lua-cor')
   :modules(
     'arr',

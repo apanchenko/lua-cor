@@ -5,17 +5,7 @@ local ass = require('src.lua-cor.ass')
 local log = require('src.lua-cor.log').get('lcor')
 local typ = require('src.lua-cor.typ')
 
--- Core dependency graph:
--- typ
--- ass
--- log
--- wrp lay
--- arr
--- map
--- obj
--- pck vec
-
-local pck = obj:extend('pck')
+local pack = obj:extend('pack')
 
 -- private:
 local path  = {}
@@ -23,7 +13,7 @@ local names = {}
 local mods  = {}
 
 -- constructor
-function pck:new(pack_path)
+function pack:new(pack_path)
   self = obj.new(self)
   self[path] = pack_path
   self[names] = arr() -- array of module names, keeping order
@@ -32,7 +22,7 @@ function pck:new(pack_path)
 end
 
 -- load module to package
-function pck:modules(...)
+function pack:modules(...)
   local indent = log.info(self[path]..':load('..arr.join(arg)..')')
   indent.enter()
   arr.each(arg, function(name)
@@ -49,7 +39,7 @@ function pck:modules(...)
 end
 
 -- load module to package
-function pck:packs(...)
+function pack:packs(...)
   local indent = log.info(self[path].. ':packs('.. arr.join(arg).. ')')
   indent.enter()
   arr.each(arg, function(name)
@@ -66,12 +56,12 @@ function pck:packs(...)
 end
 
 --
-function pck:get(name)
+function pack:get(name)
   return self[mods][name]
 end
 
 -- wrap modules
-function pck:wrap()
+function pack:wrap()
   local core = require 'src.lua-cor._pack'
   -- cannot wrap the wrapper so do logging manually
   local indent = log.trace(self[path]..':wrap() '.. tostring(self[names]))
@@ -91,7 +81,7 @@ function pck:wrap()
 end
 
 -- get random module
-function pck:random(pred)
+function pack:random(pred)
   if pred then
     return map.select(self[mods], pred):random()
   end
@@ -99,10 +89,10 @@ function pck:random(pred)
 end
 
 -- test modules
-function pck:test()
+function pack:test()
   self[names]:each(function(name)
     local mod = self[mods][name]
-    if typ.extends(mod, pck) then
+    if typ.extends(mod, pack) then
       local indent = log.trace(name..':test()')
       indent.enter()
       mod:test()
@@ -118,4 +108,4 @@ function pck:test()
 end
 
 -- module
-return pck
+return pack
