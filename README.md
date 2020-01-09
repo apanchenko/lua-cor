@@ -19,3 +19,5 @@ Contains common code I found useful and shareable:
 - typ - type checking
 - vec - 2D vector
 - wrp - instrument any function with argument type checkers and logs (and performance meter in future)
+
+* Not developing this project anymore. Switched to other wonderful techs.
